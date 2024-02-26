@@ -43,6 +43,13 @@ if __name__ == "__main__":
         teacher = execute_read_query(connection, sql)
         return jsonify(teacher)
 
+    # Retrieve all child entity instances from the database
+    @app.route("/api/child", methods=["GET"])
+    def retrieve_child():
+        sql = "SELECT * FROM CHILD ORDER BY CHILD_FNAME, CHILD_LNAME;"
+        child = execute_read_query(connection, sql)
+        return jsonify(child)
+
     # This section is for retrieving an entity instance from each entity
     # Retrieve a facility instance by ID
     @app.route("/api/facility/<int:facility_id>")
@@ -66,7 +73,7 @@ if __name__ == "__main__":
                 return jsonify(entity)
         return "Invalid ID"
 
-    # Retrieve a classroom instance by ID
+    # Retrieve a teacher instance by ID
     @app.route("/api/teacher/<int:teacher_id>")
     def retrieve_teacher_id(teacher_id):
         sql = "SELECT * FROM TEACHER ORDER BY TEACHER_LNAME, TEACHER_FNAME;"
@@ -74,6 +81,17 @@ if __name__ == "__main__":
 
         for entity in teacher:
             if entity["TEACHER_ID"] == teacher_id:
+                return jsonify(entity)
+        return "Invalid ID"
+
+    # Retrieve a child instance by ID
+    @app.route("/api/child/<int:child_id>")
+    def retrieve_child_id(child_id):
+        sql = "SELECT * FROM CHILD ORDER BY CHILD_FNAME, CHILD_LNAME;"
+        child = execute_read_query(connection, sql)
+
+        for entity in child:
+            if entity["CHILD_ID"] == child_id:
                 return jsonify(entity)
         return "Invalid ID"
 
