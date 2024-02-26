@@ -146,4 +146,22 @@ if __name__ == "__main__":
 
         return "Invalid ID"
 
+    # Delete a child instance
+    @app.route("/api/child/<int:child_id>", methods=["DELETE"])
+    def delete_child_id(child_id):
+        sql = "SELECT * FROM CHILD;"
+        child = execute_read_query(connection, sql)
+
+        for i in range(len(child) - 1, -1, -1):  # start, stop, step size
+            id_to_delete = child[i]["CHILD_ID"]
+            if child_id == id_to_delete:
+                first_name = child[i]["CHILD_FNAME"]
+                last_name = child[i]["CHILD_LNAME"]
+                delete_statement = f"Successfully deleted {first_name} {last_name} from the database"
+                delete_query = f"DELETE FROM CHILD WHERE CHILD_ID = {child_id}"
+                delete_sql = execute_query(connection, delete_query)
+                return delete_statement, delete_sql
+
+        return "Invalid ID"
+
     app.run()
