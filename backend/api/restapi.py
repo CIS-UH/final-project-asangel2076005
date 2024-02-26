@@ -21,14 +21,21 @@ if __name__ == "__main__":
     def home():
         return "<h1><center>Welcome to the School API</center></h1>"
 
-    # Retrieve all facility objects from the database
+    # Retrieve all facility entity instances from the database
     @app.route("/api/facility", methods=["GET"])
     def retrieve_facility():
         sql = "SELECT * FROM FACILITY;"
         facility = execute_read_query(connection, sql)
         return jsonify(facility)
 
-    # Retrieve facility instances by ID
+    # Retrieve all classroom entity instances from the database
+    @app.route("/api/classroom", methods=["GET"])
+    def retrieve_classroom():
+        sql = "SELECT * FROM CLASSROOM ORDER BY CLASS_CAPACITY;"
+        classroom = execute_read_query(connection, sql)
+        return jsonify(classroom)
+
+    # Retrieve a facility instance by ID
     @app.route("/api/facility/<int:facility_id>")
     def retrieve_facility_id(facility_id):
         sql = "SELECT * FROM FACILITY"
@@ -38,5 +45,17 @@ if __name__ == "__main__":
             if entity["FACILITY_ID"] == facility_id:
                 return jsonify(entity)
         return "Invalid ID"
+
+    # Retrieve a classroom instance by ID
+    @app.route("/api/classroom/<int:class_id>")
+    def retrieve_classroom_id(class_id):
+        sql = "SELECT * FROM CLASSROOM ORDER BY CLASS_CAPACITY;"
+        classroom = execute_read_query(connection, sql)
+
+        for entity in classroom:
+            if entity["CLASS_ID"] == class_id:
+                return jsonify(entity)
+        return "Invalid ID"
+
 
     app.run()
