@@ -164,4 +164,20 @@ if __name__ == "__main__":
 
         return "Invalid ID"
 
+    # This section goes over adding an entity instance to each table
+    # Add a facility entity
+    @app.route("/api/facility", methods=["POST"])
+    def add_facility():
+        request_data = request.get_json()
+
+        if not request_data:
+            return "No facility name provided"
+
+        facility_name = request_data["FACILITY_NAME"]
+        add_query = f"INSERT INTO FACILITY (FACILITY_NAME) VALUES ('{facility_name}');"
+        execute_query(connection, add_query)
+
+        return "Facility Addition Success"
+
+
     app.run()
