@@ -198,7 +198,50 @@ if __name__ == "__main__":
                     f"VALUES ({class_capacity}, '{class_name}', {facility_id})"
         execute_query(connection, add_query)
 
-        return "Success"
+        return "Classroom addition success"
 
+    # Add a teacher entity
+    @app.route("/api/teacher", methods=["POST"])
+    def add_teacher():
+        request_data = request.get_json()
+
+        if not request_data:
+            return "No teacher details provided"
+
+        if ("TEACHER_FNAME" and "TEACHER_LNAME" and "CLASS_ID") not in request_data.keys():
+            return "Incomplete data, try again"
+
+        first_name = request_data["TEACHER_FNAME"]
+        last_name = request_data["TEACHER_LNAME"]
+        class_id = request_data["CLASS_ID"]
+
+        # Check the number of teachers assigned to the classroom
+        sql = f"SELECT * FROM TEACHER WHERE CLASS_ID = {class_id};"
+        teachers = execute_read_query(connection, sql)
+        num_teachers = len(teachers)
+
+        # Check the capacity of the classroom
+        sql = f"SELECT CLASS_CAPACITY FROM CLASSROOM WHERE CLASS_ID = {class_id};"
+        classroom_capacity = execute_read_query(connection, sql)[0]['CLASS_CAPACITY']
+
+        # Enforce the constraint based on the number of teachers and classroom capacity
+        if classroom_capacity > 10:
+            max_children = classroom_capacity
+        else:
+            max_children = 10
+
+        # Check the number of children assigned to the classroom
+        sql = f"SELECT COUNT(*) as num_children FROM CHILD WHERE CLASS_ID = {class_id};"
+        num_children = execute_read_query(connection, sql)[0]['num_children']
+
+        if num_children >= max_children:
+            return f"Maximum children limit reached for this classroom ({max_children})"
+
+        # Insert the teacher into the database
+        sql = f"INSERT INTO TEACHER (TEACHER_FNAME, TEACHER_LNAME, CLASS_ID) " \
+              f"VALUES ('{first_name}', '{last_name}', {class_id});"
+        execute_query(connection, sql)
+
+        return "Teacher addition success"
 
     app.run()
