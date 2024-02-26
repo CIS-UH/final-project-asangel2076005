@@ -112,7 +112,6 @@ if __name__ == "__main__":
 
         return "Invalid ID"
 
-    # This section involves the deletion of an entity instance from each table
     # Delete a classroom instance
     @app.route("/api/classroom/<int:class_id>", methods=["DELETE"])
     def delete_class_id(class_id):
@@ -124,6 +123,24 @@ if __name__ == "__main__":
             if class_id == id_to_delete:
                 delete_statement = f"Successfully deleted {classroom[i]['CLASS_NAME']} from the database"
                 delete_query = f"DELETE FROM CLASSROOM WHERE CLASS_ID = {class_id}"
+                delete_sql = execute_query(connection, delete_query)
+                return delete_statement, delete_sql
+
+        return "Invalid ID"
+
+    # Delete a teacher instance
+    @app.route("/api/teacher/<int:teacher_id>", methods=["DELETE"])
+    def delete_teacher_id(teacher_id):
+        sql = "SELECT * FROM TEACHER;"
+        teacher = execute_read_query(connection, sql)
+
+        for i in range(len(teacher) - 1, -1, -1):  # start, stop, step size
+            id_to_delete = teacher[i]["TEACHER_ID"]
+            if teacher_id == id_to_delete:
+                first_name = teacher[i]["TEACHER_FNAME"]
+                last_name = teacher[i]["TEACHER_LNAME"]
+                delete_statement = f"Successfully deleted {first_name} {last_name} from the database"
+                delete_query = f"DELETE FROM TEACHER WHERE TEACHER_ID = {teacher_id}"
                 delete_sql = execute_query(connection, delete_query)
                 return delete_statement, delete_sql
 
