@@ -194,6 +194,15 @@ if __name__ == "__main__":
         class_name = request_data["CLASS_NAME"]
         facility_id = request_data["FACILITY_ID"]
 
+        facility_sql = f"SELECT FACILITY_ID FROM FACILITY;"
+        facility = execute_read_query(connection, facility_sql)
+
+        # Lists the allowed facilities by ID
+        allowed_facilities = [facility[i]["FACILITY_ID"] for i in range(len(facility))]
+
+        if facility_id not in allowed_facilities:
+            return "Invalid facility ID"
+
         add_query = f"INSERT INTO CLASSROOM (CLASS_CAPACITY, CLASS_NAME, FACILITY_ID)" \
                     f"VALUES ({class_capacity}, '{class_name}', {facility_id})"
         execute_query(connection, add_query)
@@ -215,11 +224,6 @@ if __name__ == "__main__":
         last_name = request_data["TEACHER_LNAME"]
         class_id = request_data["CLASS_ID"]
 
-        # Check the number of teachers assigned to the classroom
-        sql = f"SELECT * FROM TEACHER WHERE CLASS_ID = {class_id};"
-        teachers = execute_read_query(connection, sql)
-        num_teachers = len(teachers)
-
         # Check the capacity of the classroom
         sql = f"SELECT CLASS_CAPACITY FROM CLASSROOM WHERE CLASS_ID = {class_id};"
         classroom_capacity = execute_read_query(connection, sql)[0]['CLASS_CAPACITY']
@@ -228,7 +232,7 @@ if __name__ == "__main__":
         if classroom_capacity > 10:
             max_children = classroom_capacity
         else:
-            max_children = 10
+            max_children = classroom_capacity
 
         # Check the number of children assigned to the classroom
         sql = f"SELECT COUNT(*) as num_children FROM CHILD WHERE CLASS_ID = {class_id};"
