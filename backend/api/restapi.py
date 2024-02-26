@@ -52,7 +52,7 @@ if __name__ == "__main__":
 
     # This section is for retrieving an entity instance from each entity
     # Retrieve a facility instance by ID
-    @app.route("/api/facility/<int:facility_id>")
+    @app.route("/api/facility/<int:facility_id>", methods=["GET"])
     def retrieve_facility_id(facility_id):
         sql = "SELECT * FROM FACILITY"
         facility = execute_read_query(connection, sql)
@@ -63,7 +63,7 @@ if __name__ == "__main__":
         return "Invalid ID"
 
     # Retrieve a classroom instance by ID
-    @app.route("/api/classroom/<int:class_id>")
+    @app.route("/api/classroom/<int:class_id>", methods=["GET"])
     def retrieve_classroom_id(class_id):
         sql = "SELECT * FROM CLASSROOM ORDER BY CLASS_CAPACITY;"
         classroom = execute_read_query(connection, sql)
@@ -74,7 +74,7 @@ if __name__ == "__main__":
         return "Invalid ID"
 
     # Retrieve a teacher instance by ID
-    @app.route("/api/teacher/<int:teacher_id>")
+    @app.route("/api/teacher/<int:teacher_id>", methods=["GET"])
     def retrieve_teacher_id(teacher_id):
         sql = "SELECT * FROM TEACHER ORDER BY TEACHER_LNAME, TEACHER_FNAME;"
         teacher = execute_read_query(connection, sql)
@@ -85,7 +85,7 @@ if __name__ == "__main__":
         return "Invalid ID"
 
     # Retrieve a child instance by ID
-    @app.route("/api/child/<int:child_id>")
+    @app.route("/api/child/<int:child_id>", methods=["GET"])
     def retrieve_child_id(child_id):
         sql = "SELECT * FROM CHILD ORDER BY CHILD_FNAME, CHILD_LNAME;"
         child = execute_read_query(connection, sql)
@@ -95,5 +95,21 @@ if __name__ == "__main__":
                 return jsonify(entity)
         return "Invalid ID"
 
+    # This section involves the deletion of an entity instance from each table
+    # Delete a faculty instance
+    @app.route("/api/facility/<int:facility_id>", methods=["DELETE"])
+    def delete_faculty_id(facility_id):
+        sql = "SELECT * FROM FACILITY;"
+        facility = execute_read_query(connection, sql)
+
+        for i in range(len(facility) - 1, -1, -1):  # start, stop, step size
+            id_to_delete = facility[i]["FACILITY_ID"]
+            if facility_id == id_to_delete:
+                delete_statement = f"Successfully deleted {facility[i]['FACILITY_NAME']} from the database"
+                delete_query = f"DELETE FROM FACILITY WHERE FACILITY_ID = {facility_id}"
+                delete_sql = execute_query(connection, delete_query)
+                return delete_statement, delete_sql
+
+        return "Invalid ID"
 
     app.run()
