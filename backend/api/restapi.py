@@ -179,5 +179,26 @@ if __name__ == "__main__":
 
         return "Facility Addition Success"
 
+    # Add a classroom entity
+    @app.route("/api/classroom", methods=["POST"])
+    def add_classroom():
+        request_data = request.get_json()
+
+        if not request_data:
+            return "No classroom details provided"
+
+        if ("CLASS_CAPACITY" and "CLASS_NAME" and "FACILITY_ID") not in request_data.keys():
+            return "Incomplete data, try again"
+
+        class_capacity = request_data["CLASS_CAPACITY"]
+        class_name = request_data["CLASS_NAME"]
+        facility_id = request_data["FACILITY_ID"]
+
+        add_query = f"INSERT INTO CLASSROOM (CLASS_CAPACITY, CLASS_NAME, FACILITY_ID)" \
+                    f"VALUES ({class_capacity}, '{class_name}', {facility_id})"
+        execute_query(connection, add_query)
+
+        return "Success"
+
 
     app.run()
