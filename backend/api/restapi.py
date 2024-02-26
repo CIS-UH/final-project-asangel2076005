@@ -248,4 +248,22 @@ if __name__ == "__main__":
 
         return "Teacher addition success"
 
+    # This section involves updating an entity instance for each table
+    # Update a facility entity
+    @app.route("/api/facility/<int:facility_id>", methods=["PUT"])
+    def update_facility_id(facility_id):
+        # Check if the facility exists in the database
+        sql = f"SELECT * FROM FACILITY WHERE FACILITY_ID = {facility_id};"
+        check = execute_read_query(connection, sql)
+        if not check:
+            return "Facility with the provided ID does not exist"
+
+        request_data = request.get_json()
+        facility_name = request_data["FACILITY_NAME"]
+
+        sql = f"UPDATE FACILITY SET FACILITY_NAME = '{facility_name}' WHERE FACILITY_ID = {facility_id}"
+        execute_query(connection, sql)
+
+        return "Update success"
+
     app.run()
