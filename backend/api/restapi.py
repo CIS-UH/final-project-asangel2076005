@@ -266,4 +266,49 @@ if __name__ == "__main__":
 
         return "Update success"
 
+    # Update a classroom entity
+    @app.route("/api/classroom/<int:class_id>", methods=["PUT"])
+    def update_classroom_id(class_id):
+        # Check if the classroom exists in the database
+        sql = f"SELECT * FROM CLASSROOM WHERE CLASS_ID = {class_id};"
+        check = execute_read_query(connection, sql)
+        if not check:
+            return "Classroom with the provided ID does not exist"
+
+        request_data = request.get_json()
+
+        sets = []
+
+        if "CLASS_CAPACITY" in request_data.keys():
+            class_capacity = request_data["CLASS_CAPACITY"]
+            sets.append({"CLASS_CAPACITY": class_capacity})
+
+        if "CLASS_NAME" in request_data.keys():
+            class_name = request_data["CLASS_NAME"]
+            sets.append({"CLASS_NAME": class_name})
+
+        if "FACILITY_ID" in request_data.keys():
+            facility_id = request_data["FACILITY_ID"]
+
+            facility_sql = f"SELECT FACILITY_ID FROM FACILITY;"
+            facility = execute_read_query(connection, facility_sql)
+
+            # Lists the allowed facilities by ID
+            allowed_facilities = [facility[i]["FACILITY_ID"] for i in range(len(facility))]
+
+            if facility_id in allowed_facilities:
+                sets.append({"FACILITY_ID": facility_id})
+            else:
+                return "Facility does not exist"
+
+        for item in sets:
+            for key, value in item.items():
+                if isinstance(value, int):
+                    update_sql = f"UPDATE CLASSROOM SET {key} = {value} WHERE CLASS_ID = {class_id};"
+                else:
+                    update_sql = f"UPDATE CLASSROOM SET {key} = '{value}' WHERE CLASS_ID = {class_id};"
+                execute_query(connection, update_sql)
+
+        return "Update success"
+
     app.run()
