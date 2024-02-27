@@ -2,7 +2,7 @@ import flask
 from flask import jsonify, request
 from sql_helper import create_connection, execute_read_query, execute_query
 import creds
-
+from math import ceil
 
 if __name__ == "__main__":
     # setting up an application name
@@ -32,21 +32,21 @@ if __name__ == "__main__":
     # Retrieve all classroom entity instances from the database
     @app.route("/api/classroom", methods=["GET"])
     def retrieve_classroom():
-        sql = "SELECT * FROM CLASSROOM ORDER BY CLASS_CAPACITY;"
+        sql = "SELECT * FROM CLASSROOM;"
         classroom = execute_read_query(connection, sql)
         return jsonify(classroom)
 
     # Retrieve all teacher entity instances from the database
     @app.route("/api/teacher", methods=["GET"])
     def retrieve_teacher():
-        sql = "SELECT * FROM TEACHER ORDER BY TEACHER_LNAME, TEACHER_FNAME;"
+        sql = "SELECT * FROM TEACHER;"
         teacher = execute_read_query(connection, sql)
         return jsonify(teacher)
 
     # Retrieve all child entity instances from the database
     @app.route("/api/child", methods=["GET"])
     def retrieve_child():
-        sql = "SELECT * FROM CHILD ORDER BY CHILD_FNAME, CHILD_LNAME;"
+        sql = "SELECT * FROM CHILD;"
         child = execute_read_query(connection, sql)
         return jsonify(child)
 
@@ -65,7 +65,7 @@ if __name__ == "__main__":
     # Retrieve a classroom instance by ID
     @app.route("/api/classroom/<int:class_id>", methods=["GET"])
     def retrieve_classroom_id(class_id):
-        sql = "SELECT * FROM CLASSROOM ORDER BY CLASS_CAPACITY;"
+        sql = "SELECT * FROM CLASSROOM;"
         classroom = execute_read_query(connection, sql)
 
         for entity in classroom:
@@ -76,7 +76,7 @@ if __name__ == "__main__":
     # Retrieve a teacher instance by ID
     @app.route("/api/teacher/<int:teacher_id>", methods=["GET"])
     def retrieve_teacher_id(teacher_id):
-        sql = "SELECT * FROM TEACHER ORDER BY TEACHER_LNAME, TEACHER_FNAME;"
+        sql = "SELECT * FROM TEACHER;"
         teacher = execute_read_query(connection, sql)
 
         for entity in teacher:
@@ -87,7 +87,7 @@ if __name__ == "__main__":
     # Retrieve a child instance by ID
     @app.route("/api/child/<int:child_id>", methods=["GET"])
     def retrieve_child_id(child_id):
-        sql = "SELECT * FROM CHILD ORDER BY CHILD_FNAME, CHILD_LNAME;"
+        sql = "SELECT * FROM CHILD;"
         child = execute_read_query(connection, sql)
 
         for entity in child:
@@ -223,30 +223,45 @@ if __name__ == "__main__":
         first_name = request_data["TEACHER_FNAME"]
         last_name = request_data["TEACHER_LNAME"]
         class_id = request_data["CLASS_ID"]
+        # Keeps this query for now but does not execute it.
+        add_query = f"INSERT INTO TEACHER (TEACHER_FNAME, TEACHER_LNAME, CLASS_ID) " \
+                    f"VALUES ('{first_name}', '{last_name}', {class_id});"
 
-        # Check the capacity of the classroom
-        sql = f"SELECT CLASS_CAPACITY FROM CLASSROOM WHERE CLASS_ID = {class_id};"
-        classroom_capacity = execute_read_query(connection, sql)[0]['CLASS_CAPACITY']
+        # Lists the allowed classrooms by ID and continues only if the provided class_id matches any allowed classrooms
+        sql = f"SELECT * FROM CLASSROOM"
+        classroom = execute_read_query(connection, sql)
+        allowed_classrooms = [classroom[i]["CLASS_ID"] for i in range(len(classroom))]
+        if class_id not in allowed_classrooms:
+            return "Invalid classroom"
 
-        # Enforce the constraint based on the number of teachers and classroom capacity
-        if classroom_capacity > 10:
-            max_children = classroom_capacity
-        else:
-            max_children = classroom_capacity
-
-        # Check the number of children assigned to the classroom
+        # Counts the number of students in the provided classroom
         sql = f"SELECT COUNT(*) as num_children FROM CHILD WHERE CLASS_ID = {class_id};"
-        num_children = execute_read_query(connection, sql)[0]['num_children']
+        num_students = execute_read_query(connection, sql)[0]["num_children"]
 
-        if num_children >= max_children:
-            return f"Maximum children limit reached for this classroom ({max_children})"
+        # Counts the number of teachers in the provided classroom
+        sql = f"SELECT COUNT(*) as num_teacher FROM TEACHER WHERE CLASS_ID = {class_id};"
+        num_teacher = execute_read_query(connection, sql)[0]["num_teacher"]
 
-        # Insert the teacher into the database
-        sql = f"INSERT INTO TEACHER (TEACHER_FNAME, TEACHER_LNAME, CLASS_ID) " \
-              f"VALUES ('{first_name}', '{last_name}', {class_id});"
-        execute_query(connection, sql)
+        # For circumstances where a classroom has no students but has a capacity
+        if (num_students == 0) and (num_teacher == 0):
+            execute_query(connection, add_query)
+            return "Addition Success"
 
-        return "Teacher addition success"
+        for room in classroom:
+            if room["CLASS_ID"] == class_id:
+                # Calculates the amount of teachers needed according to the capacity of the room
+                teachers_needed = ceil(room["CLASS_CAPACITY"] // 10)
+                # If there's a remainder, an additional teacher is needed to accommodate the capacity of students
+                if room["CLASS_CAPACITY"] % 10 != 0:
+                    teachers_needed += 1
+                if num_students > room["CLASS_CAPACITY"]:
+                    return "Error: Number of students exceed room capacity. Cannot assign teachers"
+
+                if num_teacher >= teachers_needed:
+                    return "Addition Failed: Too many teachers"
+                else:
+                    execute_query(connection, add_query)
+                    return "Teacher addition success"
 
     # This section involves updating an entity instance for each table
     # Update a facility entity
