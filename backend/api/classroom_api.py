@@ -1,7 +1,7 @@
 import flask
 from flask import jsonify, request
-from sql_helper import create_connection, execute_read_query, execute_query
-import creds
+from self_made_modules.sql_helper import create_connection, execute_read_query, execute_query
+from self_made_modules import creds
 
 if __name__ == "__main__":
     # setting up an application name
