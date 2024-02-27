@@ -105,4 +105,75 @@ if __name__ == "__main__":
                     execute_query(connection, add_query)
                     return f"Child addition success"
 
+
+    # Update a child entity
+    @app.route("/api/child/<int:child_id>", methods=["PUT"])
+    def update_child_id(child_id):
+        # Check if the child exists in the database
+        sql = f"SELECT * FROM CHILD WHERE CHILD_ID = {child_id};"
+        check = execute_read_query(connection, sql)
+
+        if not check:
+            return "Child with the provided ID does not exist"
+
+        request_data = request.get_json()
+
+        sets = []
+
+        if "CHILD_FNAME" in request_data.keys():
+            first_name = request_data["CHILD_FNAME"]
+            sets.append({"CHILD_FNAME": first_name})
+
+        if "CHILD_LNAME" in request_data.keys():
+            last_name = request_data["CHILD_LNAME"]
+            sets.append({"CHILD_LNAME": last_name})
+
+        if "CHILD_AGE" in request_data.keys():
+            age = request_data["CHILD_AGE"]
+            sets.append({"CHILD_AGE": age})
+
+        if "CLASS_ID" in request_data.keys():
+            class_id = request_data["CLASS_ID"]
+
+            # Lists the allowed classrooms by ID and continues
+            # only if the provided class_id matches any allowed classrooms
+            sql = f"SELECT * FROM CLASSROOM"
+            classroom = execute_read_query(connection, sql)
+            allowed_classrooms = [classroom[i]["CLASS_ID"] for i in range(len(classroom))]
+            if class_id not in allowed_classrooms:
+                return "Invalid classroom"
+
+            # Counts the number of students in the provided classroom
+            sql = f"SELECT COUNT(*) as num_children FROM CHILD WHERE CLASS_ID = {class_id};"
+            num_students = execute_read_query(connection, sql)[0]["num_children"]
+
+            # Counts the number of teachers in the provided classroom
+            sql = f"SELECT COUNT(*) as num_teacher FROM TEACHER WHERE CLASS_ID = {class_id};"
+            num_teacher = execute_read_query(connection, sql)[0]["num_teacher"]
+
+            for room in classroom:
+                if room["CLASS_ID"] == class_id:
+                    if num_students >= room["CLASS_CAPACITY"]:
+                        return "Cannot add more students. Room is full"
+
+                    # Bounds to a variable whether a child can be added to the room or not
+                    if num_students < 10 * num_teacher:
+                        insertion_status = True
+                    else:
+                        insertion_status = False
+
+                    if not insertion_status:
+                        return "Cannot add student. Number of teachers most likely cannot guide more students"
+                    else:
+                        sets.append({"CLASS_ID": class_id})
+
+        for item in sets:
+            for key, value in item.items():
+                if isinstance(value, int):
+                    update_sql = f"UPDATE CHILD SET {key} = {value} WHERE CHILD_ID = {child_id};"
+                else:
+                    update_sql = f"UPDATE CHILD SET {key} = '{value}' WHERE CHILD_ID = {child_id};"
+                execute_query(connection, update_sql)
+
+        return "Update success"
     app.run()
