@@ -3,6 +3,7 @@ from flask import jsonify, request
 from self_made_modules.sql_helper import create_connection, execute_read_query, execute_query
 from self_made_modules import creds
 
+
 if __name__ == "__main__":
     # setting up an application name
     app = flask.Flask(__name__)  # sets up the application

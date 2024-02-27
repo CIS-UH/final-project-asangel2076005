@@ -3,6 +3,7 @@ from flask import jsonify, request
 from self_made_modules.sql_helper import create_connection, execute_read_query, execute_query
 from self_made_modules import creds
 
+
 if __name__ == "__main__":
     # setting up an application name
     app = flask.Flask(__name__)  # sets up the application
@@ -50,5 +51,58 @@ if __name__ == "__main__":
                 return delete_statement, delete_sql
 
         return "Invalid ID"
+
+    # Add a child entity
+    @app.route("/api/child", methods=["POST"])
+    def add_child():
+        request_data = request.get_json()
+
+        if (not request_data) or ("CHILD_ID" in request_data.keys()):
+            return "No child details provided"
+
+        columns = [key for key in request_data.keys()]
+
+        if (len(columns) > 4) or (len(columns) < 4):
+            return "Incomplete data, try again"
+
+        first_name = request_data["CHILD_FNAME"]
+        last_name = request_data["CHILD_LNAME"]
+        age = request_data["CHILD_AGE"]
+        class_id = request_data["CLASS_ID"]
+        # Keeps this query for now but does not execute it.
+        add_query = f"INSERT INTO CHILD (CHILD_FNAME, CHILD_LNAME, CHILD_AGE, CLASS_ID) " \
+                    f"VALUES ('{first_name}', '{last_name}', {age}, {class_id});"
+
+        # Lists the allowed classrooms by ID and continues only if the provided class_id matches any allowed classrooms
+        sql = f"SELECT * FROM CLASSROOM"
+        classroom = execute_read_query(connection, sql)
+        allowed_classrooms = [classroom[i]["CLASS_ID"] for i in range(len(classroom))]
+        if class_id not in allowed_classrooms:
+            return "Invalid classroom"
+
+        # Counts the number of students in the provided classroom
+        sql = f"SELECT COUNT(*) as num_children FROM CHILD WHERE CLASS_ID = {class_id};"
+        num_students = execute_read_query(connection, sql)[0]["num_children"]
+
+        # Counts the number of teachers in the provided classroom
+        sql = f"SELECT COUNT(*) as num_teacher FROM TEACHER WHERE CLASS_ID = {class_id};"
+        num_teacher = execute_read_query(connection, sql)[0]["num_teacher"]
+
+        for room in classroom:
+            if room["CLASS_ID"] == class_id:
+                if num_students >= room["CLASS_CAPACITY"]:
+                    return "Cannot add more students. Room is full or number of students have exceeded the capacity"
+
+                # Bounds to a variable whether a child can be added to the room or not
+                if num_students < 10 * num_teacher:
+                    insertion_status = True
+                else:
+                    insertion_status = False
+
+                if not insertion_status:
+                    return "Cannot add student. Number of teachers most likely cannot guide more students"
+                else:
+                    execute_query(connection, add_query)
+                    return f"Child addition success"
 
     app.run()

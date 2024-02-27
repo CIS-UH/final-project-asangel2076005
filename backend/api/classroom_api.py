@@ -3,6 +3,7 @@ from flask import jsonify, request
 from self_made_modules.sql_helper import create_connection, execute_read_query, execute_query
 from self_made_modules import creds
 
+
 if __name__ == "__main__":
     # setting up an application name
     app = flask.Flask(__name__)  # sets up the application
@@ -53,10 +54,12 @@ if __name__ == "__main__":
     def add_classroom():
         request_data = request.get_json()
 
-        if not request_data:
+        if (not request_data) or ("CLASS_ID" in request_data.keys()):
             return "No classroom details provided"
 
-        if ("CLASS_CAPACITY" and "CLASS_NAME" and "FACILITY_ID") not in request_data.keys():
+        columns = [key for key in request_data.keys()]
+
+        if (len(columns) > 3) or (len(columns) < 3):
             return "Incomplete data, try again"
 
         class_capacity = request_data["CLASS_CAPACITY"]

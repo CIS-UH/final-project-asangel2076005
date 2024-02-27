@@ -3,6 +3,7 @@ from flask import jsonify, request
 from self_made_modules.sql_helper import create_connection, execute_read_query, execute_query
 from self_made_modules import creds
 
+
 if __name__ == "__main__":
     # setting up an application name
     app = flask.Flask(__name__)  # sets up the application
@@ -56,10 +57,12 @@ if __name__ == "__main__":
     def add_teacher():
         request_data = request.get_json()
 
-        if not request_data:
+        if (not request_data) or ("TEACHER_ID" in request_data.keys()):
             return "No teacher details provided"
 
-        if ("TEACHER_FNAME" and "TEACHER_LNAME" and "CLASS_ID") not in request_data.keys():
+        columns = [key for key in request_data.keys()]
+
+        if (len(columns) > 3) or (len(columns) < 3):
             return "Incomplete data, try again"
 
         first_name = request_data["TEACHER_FNAME"]
@@ -168,9 +171,9 @@ if __name__ == "__main__":
         for item in sets:
             for key, value in item.items():
                 if isinstance(value, int):
-                    update_sql = f"UPDATE TEACHER SET {key} = {value} WHERE CLASS_ID = {class_id};"
+                    update_sql = f"UPDATE TEACHER SET {key} = {value} WHERE TEACHER_ID = {teacher_id};"
                 else:
-                    update_sql = f"UPDATE TEACHER SET {key} = '{value}' WHERE CLASS_ID = {class_id};"
+                    update_sql = f"UPDATE TEACHER SET {key} = '{value}' WHERE TEACHER_ID = {teacher_id};"
                 execute_query(connection, update_sql)
 
         return "Update success"
