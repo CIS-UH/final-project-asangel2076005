@@ -92,7 +92,7 @@ if __name__ == "__main__":
         for room in classroom:
             if room["CLASS_ID"] == class_id:
                 # Calculates the amount of teachers needed according to the capacity of the room
-                teachers_needed = ceil(room["CLASS_CAPACITY"] // 10)
+                teachers_needed = room["CLASS_CAPACITY"] // 10
                 # If there's a remainder, an additional teacher is needed to accommodate the capacity of students
                 if room["CLASS_CAPACITY"] % 10 != 0:
                     teachers_needed += 1
@@ -104,5 +104,75 @@ if __name__ == "__main__":
                 else:
                     execute_query(connection, add_query)
                     return "Teacher addition success"
+
+    # Update a teacher entity
+    @app.route("/api/teacher/<int:teacher_id>", methods=["PUT"])
+    def update_teacher_id(teacher_id):
+        # Check if the teacher exists in the database
+        sql = f"SELECT * FROM TEACHER WHERE TEACHER_ID = {teacher_id};"
+        check = execute_read_query(connection, sql)
+
+        if not check:
+            return "Teacher with the provided ID does not exist"
+
+        request_data = request.get_json()
+
+        sets = []
+
+        if "TEACHER_FNAME" in request_data.keys():
+            first_name = request_data["TEACHER_FNAME"]
+            sets.append({"TEACHER_FNAME": first_name})
+
+        if "TEACHER_LNAME" in request_data.keys():
+            last_name = request_data["TEACHER_LNAME"]
+            sets.append({"TEACHER_LNAME": last_name})
+
+        if "CLASS_ID" in request_data.keys():
+            class_id = request_data["CLASS_ID"]
+
+            # Lists the allowed classrooms by ID and continues
+            # only if the provided class_id matches any allowed classrooms
+            sql = f"SELECT * FROM CLASSROOM"
+            classroom = execute_read_query(connection, sql)
+            allowed_classrooms = [classroom[i]["CLASS_ID"] for i in range(len(classroom))]
+            if class_id not in allowed_classrooms:
+                return "Invalid classroom"
+
+            # Counts the number of students in the provided classroom
+            sql = f"SELECT COUNT(*) as num_children FROM CHILD WHERE CLASS_ID = {class_id};"
+            num_students = execute_read_query(connection, sql)[0]["num_children"]
+
+            # Counts the number of teachers in the provided classroom
+            sql = f"SELECT COUNT(*) as num_teacher FROM TEACHER WHERE CLASS_ID = {class_id};"
+            num_teacher = execute_read_query(connection, sql)[0]["num_teacher"]
+
+            # For circumstances where a classroom has no students but has a capacity
+            if (num_students == 0) and (num_teacher == 0):
+                sets.append({"CLASS_ID": class_id})
+
+            for room in classroom:
+                if room["CLASS_ID"] == class_id:
+                    # Calculates the amount of teachers needed according to the capacity of the room
+                    teachers_needed = room["CLASS_CAPACITY"] // 10
+                    # If there's a remainder, an additional teacher is needed to accommodate the capacity of students
+                    if room["CLASS_CAPACITY"] % 10 != 0:
+                        teachers_needed += 1
+                    if num_students > room["CLASS_CAPACITY"]:
+                        return "Error: Number of students exceed room capacity. Cannot assign teachers"
+
+                    if num_teacher >= teachers_needed:
+                        return "Addition Failed: Too many teachers"
+                    else:
+                        sets.append({"CLASS_ID": class_id})
+
+        for item in sets:
+            for key, value in item.items():
+                if isinstance(value, int):
+                    update_sql = f"UPDATE TEACHER SET {key} = {value} WHERE CLASS_ID = {class_id};"
+                else:
+                    update_sql = f"UPDATE TEACHER SET {key} = '{value}' WHERE CLASS_ID = {class_id};"
+                execute_query(connection, update_sql)
+
+        return "Update success"
 
     app.run()
