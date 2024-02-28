@@ -8,7 +8,6 @@ if __name__ == "__main__":
     app = flask.Flask(__name__)  # sets up the application
     app.config["DEBUG"] = True  # allow to show errors in browser
 
-    # Retrieve inventory entity set from database
     my_creds = creds.Creds()
     connection = create_connection(my_creds.connection_string,
                                    my_creds.user_name,
