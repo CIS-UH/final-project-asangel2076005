@@ -56,18 +56,42 @@ if __name__ == "__main__":
     def add_child():
         request_data = request.get_json()
 
-        if (not request_data) or ("CHILD_ID" in request_data.keys()):
-            return "No child details provided"
+        # If no keys and values are provided in the body in POSTMAN
+        if not request_data:
+            return "No child data added"
 
-        columns = [key for key in request_data.keys()]
+        # If you include CHILD_ID in the body
+        if "CHILD_ID" in request_data.keys():
+            return "Cannot enter a child ID"
 
-        if (len(columns) > 4) or (len(columns) < 4):
-            return "Incomplete data, try again"
+        allowed_keys = ["CHILD_FNAME", "CHILD_LNAME", "CHILD_AGE", "CLASS_ID"]
+        retrieved_keys = [key for key in request_data.keys()]
 
-        first_name = request_data["CHILD_FNAME"]
-        last_name = request_data["CHILD_LNAME"]
-        age = request_data["CHILD_AGE"]
-        class_id = request_data["CLASS_ID"]
+        # If you put a key other than what's in allowed_keys such as JOB_CODE OR EMPLOYEE_CODE, then an error will show
+        for key in retrieved_keys:
+            if key not in allowed_keys:
+                return f"Invalid key(s) not allowed\n" \
+                       f"Keys must be: {', '.join(allowed_keys)}"
+
+        # Since every columns (keys) are NOT NULL (WE NEED THEM), if one is missing from allowed_keys, error is shown
+        # Postman will also tell you which columns (keys) you're missing
+        if len(retrieved_keys) != len(allowed_keys):
+            missing_keys = []
+            for key in allowed_keys:
+                if key not in retrieved_keys:
+                    missing_keys.append(key)
+            if len(missing_keys) > 1:
+                return f"Error: Insufficient data. make sure {', '.join(missing_keys)} are included"
+            else:
+                return f"Error: Insufficient data. make sure {' '.join(missing_keys)} is included"
+
+        try:
+            first_name = str(request_data["CHILD_FNAME"])
+            last_name = str(request_data["CHILD_LNAME"])
+            age = int(request_data["CHILD_AGE"])
+            class_id = int(request_data["CLASS_ID"])
+        except ValueError:
+            return f"AGE and CLASS ID must be integer"
         # Keeps this query for now but does not execute it.
         add_query = f"INSERT INTO CHILD (CHILD_FNAME, CHILD_LNAME, CHILD_AGE, CLASS_ID) " \
                     f"VALUES ('{first_name}', '{last_name}', {age}, {class_id});"
@@ -108,31 +132,47 @@ if __name__ == "__main__":
     # Update a child entity
     @app.route("/api/child/<int:child_id>", methods=["PUT"])
     def update_child_id(child_id):
-        # Check if the child exists in the database
+        request_data = request.get_json()
+
         sql = f"SELECT * FROM CHILD WHERE CHILD_ID = {child_id};"
         check = execute_read_query(connection, sql)
-
         if not check:
-            return "Child with the provided ID does not exist"
+            return "Child does not exist"
 
-        request_data = request.get_json()
+        if "CHILD_ID" in request_data.keys():
+            return "Cannot modify child ID"
+
+        allowed_keys = ["CHILD_FNAME", "CHILD_LNAME", "CHILD_AGE", "CLASS_ID"]
+        retrieved_keys = [key for key in request_data.keys()]
+
+        # If you put a key other than what's in allowed_keys such as JOB_CODE OR EMPLOYEE_CODE, then an error will show
+        for key in retrieved_keys:
+            if key not in allowed_keys:
+                return f"Invalid key(s) not allowed\n" \
+                       f"Keys must be: {', '.join(allowed_keys)}"
 
         sets = []
 
         if "CHILD_FNAME" in request_data.keys():
-            first_name = request_data["CHILD_FNAME"]
+            first_name = str(request_data["CHILD_FNAME"])
             sets.append({"CHILD_FNAME": first_name})
 
         if "CHILD_LNAME" in request_data.keys():
-            last_name = request_data["CHILD_LNAME"]
+            last_name = str(request_data["CHILD_LNAME"])
             sets.append({"CHILD_LNAME": last_name})
 
         if "CHILD_AGE" in request_data.keys():
-            age = request_data["CHILD_AGE"]
+            try:
+                age = int(request_data["CHILD_AGE"])
+            except ValueError:
+                return "AGE must be integer"
             sets.append({"CHILD_AGE": age})
 
         if "CLASS_ID" in request_data.keys():
-            class_id = request_data["CLASS_ID"]
+            try:
+                class_id = int(request_data["CLASS_ID"])
+            except ValueError:
+                return "CLASS ID must be integer"
 
             # Lists the allowed classrooms by ID and continues
             # only if the provided class_id matches any allowed classrooms

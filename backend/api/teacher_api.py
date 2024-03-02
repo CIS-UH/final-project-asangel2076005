@@ -60,7 +60,7 @@ if __name__ == "__main__":
         if not request_data:
             return "No teacher data added"
 
-        # If you include CLASS_ID in the body
+        # If you include TEACHER_ID in the body
         if "TEACHER_ID" in request_data.keys():
             return "Cannot enter a teacher ID"
 
