@@ -110,16 +110,12 @@ if __name__ == "__main__":
     def update_classroom_id(class_id):
         request_data = request.get_json()
 
-        # Check if the student exists
+        # Check if the classroom exists
         sql = f"SELECT * FROM CLASSROOM WHERE CLASS_ID = {class_id};"
-        # Check will return ONE dictionary INSIDE a list
-        # If you want to access the values inside the dictionary,
-        # you must enter check[0]["STUDENT_ID"] to retrieve the number
         check = execute_read_query(connection, sql)
         if not check:
             return "Classroom does not exist"
 
-        # If STUDENT_ID is part of the body in POSTMAN, error will occur
         if "CLASS_ID" in request_data.keys():
             return "Cannot modify classroom ID"
 

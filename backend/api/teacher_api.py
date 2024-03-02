@@ -56,17 +56,42 @@ if __name__ == "__main__":
     def add_teacher():
         request_data = request.get_json()
 
-        if (not request_data) or ("TEACHER_ID" in request_data.keys()):
-            return "No teacher details provided"
+        # If no keys and values are provided in the body in POSTMAN
+        if not request_data:
+            return "No teacher data added"
 
-        columns = [key for key in request_data.keys()]
+        # If you include CLASS_ID in the body
+        if "TEACHER_ID" in request_data.keys():
+            return "Cannot enter a teacher ID"
 
-        if (len(columns) > 3) or (len(columns) < 3):
-            return "Incomplete data, try again"
+        allowed_keys = ["TEACHER_FNAME", "TEACHER_LNAME", "CLASS_ID"]
+        retrieved_keys = [key for key in request_data.keys()]
 
-        first_name = request_data["TEACHER_FNAME"]
-        last_name = request_data["TEACHER_LNAME"]
-        class_id = request_data["CLASS_ID"]
+        # If you put a key other than what's in allowed_keys such as JOB_CODE OR EMPLOYEE_CODE, then an error will show
+        for key in retrieved_keys:
+            if key not in allowed_keys:
+                return f"Invalid key(s) not allowed\n" \
+                       f"Keys must be: {', '.join(allowed_keys)}"
+
+        # Since every columns (keys) are NOT NULL (WE NEED THEM), if one is missing from allowed_keys, error is shown
+        # Postman will also tell you which columns (keys) you're missing
+        if len(retrieved_keys) != len(allowed_keys):
+            missing_keys = []
+            for key in allowed_keys:
+                if key not in retrieved_keys:
+                    missing_keys.append(key)
+            if len(missing_keys) > 1:
+                return f"Error: Insufficient data. make sure {', '.join(missing_keys)} are included"
+            else:
+                return f"Error: Insufficient data. make sure {' '.join(missing_keys)} is included"
+
+        try:
+            first_name = str(request_data["TEACHER_FNAME"])
+            last_name = str(request_data["TEACHER_LNAME"])
+            class_id = int(request_data["CLASS_ID"])
+        except ValueError:
+            return "CLASS ID must be integer"
+
         # Keeps this query for now but does not execute it.
         add_query = f"INSERT INTO TEACHER (TEACHER_FNAME, TEACHER_LNAME, CLASS_ID) " \
                     f"VALUES ('{first_name}', '{last_name}', {class_id});"
@@ -110,27 +135,41 @@ if __name__ == "__main__":
     # Update a teacher entity
     @app.route("/api/teacher/<int:teacher_id>", methods=["PUT"])
     def update_teacher_id(teacher_id):
-        # Check if the teacher exists in the database
+        request_data = request.get_json()
+
+        # Check if the teacher exists
         sql = f"SELECT * FROM TEACHER WHERE TEACHER_ID = {teacher_id};"
         check = execute_read_query(connection, sql)
-
         if not check:
-            return "Teacher with the provided ID does not exist"
+            return "Teacher does not exist"
 
-        request_data = request.get_json()
+        if "TEACHER_ID" in request_data.keys():
+            return "Cannot modify teacher ID"
+
+        allowed_keys = ["TEACHER_FNAME", "TEACHER_LNAME", "CLASS_ID"]
+        retrieved_keys = [key for key in request_data.keys()]
+
+        # If you put a key other than what's in allowed_keys such as JOB_CODE OR EMPLOYEE_CODE, then an error will show
+        for key in retrieved_keys:
+            if key not in allowed_keys:
+                return f"Invalid key(s) not allowed\n" \
+                       f"Keys must be: {', '.join(allowed_keys)}"
 
         sets = []
 
         if "TEACHER_FNAME" in request_data.keys():
-            first_name = request_data["TEACHER_FNAME"]
+            first_name = str(request_data["TEACHER_FNAME"])
             sets.append({"TEACHER_FNAME": first_name})
 
         if "TEACHER_LNAME" in request_data.keys():
-            last_name = request_data["TEACHER_LNAME"]
+            last_name = str(request_data["TEACHER_LNAME"])
             sets.append({"TEACHER_LNAME": last_name})
 
         if "CLASS_ID" in request_data.keys():
-            class_id = request_data["CLASS_ID"]
+            try:
+                class_id = int(request_data["CLASS_ID"])
+            except ValueError:
+                return "CLASS ID must be integer"
 
             # Lists the allowed classrooms by ID and continues
             # only if the provided class_id matches any allowed classrooms
