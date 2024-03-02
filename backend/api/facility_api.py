@@ -57,7 +57,36 @@ if __name__ == "__main__":
         if not request_data:
             return "No facility name provided"
 
-        facility_name = request_data["FACILITY_NAME"]
+        if "FACILITY_ID" in request_data.keys():
+            return "Cannot manually add facility ID"
+
+        allowed_keys = ["FACILITY_NAME"]
+        retrieved_keys = [key for key in request_data.keys()]
+
+        # If you put a key other than what's in allowed_keys such as JOB_CODE OR EMPLOYEE_CODE, then an error will show
+        for key in retrieved_keys:
+            if key not in allowed_keys:
+                return f"Invalid key(s) not allowed\n" \
+                       f"Keys must be: {', '.join(allowed_keys)}"
+
+        # Since every columns (keys) are NOT NULL (WE NEED THEM), if one is missing from allowed_keys, error is shown
+        # Postman will also tell you which columns (keys) you're missing
+        if len(retrieved_keys) != len(allowed_keys):
+            missing_keys = []
+            for key in allowed_keys:
+                if key not in retrieved_keys:
+                    missing_keys.append(key)
+            if len(missing_keys) > 1:
+                return f"Error: Insufficient data. make sure {', '.join(missing_keys)} are included"
+            else:
+                return f"Error: Insufficient data. make sure {' '.join(missing_keys)} is included"
+
+        # Assign variables to their corresponding data type; if not met, throw an error
+        try:
+            facility_name = str(request_data["FACILITY_NAME"])
+        except ValueError:
+            return "Facility name must be string"
+
         add_query = f"INSERT INTO FACILITY (FACILITY_NAME) VALUES ('{facility_name}');"
         execute_query(connection, add_query)
 
@@ -66,13 +95,25 @@ if __name__ == "__main__":
     # Update a facility entity
     @app.route("/api/facility/<int:facility_id>", methods=["PUT"])
     def update_facility_id(facility_id):
+        request_data = request.get_json()
         # Check if the facility exists in the database
         sql = f"SELECT * FROM FACILITY WHERE FACILITY_ID = {facility_id};"
         check = execute_read_query(connection, sql)
         if not check:
             return "Facility with the provided ID does not exist"
 
-        request_data = request.get_json()
+        if "FACILITY_ID" in request_data.keys():
+            return "Cannot manually add facility ID"
+
+        allowed_keys = ["FACILITY_NAME"]
+        retrieved_keys = [key for key in request_data.keys()]
+
+        # If you put a key other than what's in allowed_keys such as JOB_CODE OR EMPLOYEE_CODE, then an error will show
+        for key in retrieved_keys:
+            if key not in allowed_keys:
+                return f"Invalid key(s) not allowed\n" \
+                       f"Keys must be: {', '.join(allowed_keys)}"
+
         facility_name = request_data["FACILITY_NAME"]
 
         sql = f"UPDATE FACILITY SET FACILITY_NAME = '{facility_name}' WHERE FACILITY_ID = {facility_id}"
