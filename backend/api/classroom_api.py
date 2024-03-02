@@ -54,17 +54,41 @@ if __name__ == "__main__":
     def add_classroom():
         request_data = request.get_json()
 
-        if (not request_data) or ("CLASS_ID" in request_data.keys()):
-            return "No classroom details provided"
+        # If no keys and values are provided in the body in POSTMAN
+        if not request_data:
+            return "No student data added"
 
-        columns = [key for key in request_data.keys()]
+        # If you include CLASS_ID in the body
+        if "CLASS_ID" in request_data.keys():
+            return "Cannot enter a class ID"
 
-        if (len(columns) > 3) or (len(columns) < 3):
-            return "Incomplete data, try again"
+        allowed_keys = ["CLASS_CAPACITY", "CLASS_NAME", "FACILITY_ID"]
+        retrieved_keys = [key for key in request_data.keys()]
 
-        class_capacity = request_data["CLASS_CAPACITY"]
-        class_name = request_data["CLASS_NAME"]
-        facility_id = request_data["FACILITY_ID"]
+        # If you put a key other than what's in allowed_keys such as JOB_CODE OR EMPLOYEE_CODE, then an error will show
+        for key in retrieved_keys:
+            if key not in allowed_keys:
+                return f"Invalid key(s) not allowed\n" \
+                       f"Keys must be: {', '.join(allowed_keys)}"
+
+        # Since every columns (keys) are NOT NULL (WE NEED THEM), if one is missing from allowed_keys, error is shown
+        # Postman will also tell you which columns (keys) you're missing
+        if len(retrieved_keys) != len(allowed_keys):
+            missing_keys = []
+            for key in allowed_keys:
+                if key not in retrieved_keys:
+                    missing_keys.append(key)
+            if len(missing_keys) > 1:
+                return f"Error: Insufficient data. make sure {', '.join(missing_keys)} are included"
+            else:
+                return f"Error: Insufficient data. make sure {' '.join(missing_keys)} is included"
+
+        try:
+            class_capacity = int(request_data["CLASS_CAPACITY"])
+            class_name = request_data["CLASS_NAME"]
+            facility_id = int(request_data["FACILITY_ID"])
+        except ValueError:
+            return "CLASS CAPACITY and FACILITY ID must be integer"
 
         facility_sql = f"SELECT FACILITY_ID FROM FACILITY;"
         facility = execute_read_query(connection, facility_sql)
@@ -84,26 +108,48 @@ if __name__ == "__main__":
     # Update a classroom entity
     @app.route("/api/classroom/<int:class_id>", methods=["PUT"])
     def update_classroom_id(class_id):
-        # Check if the classroom exists in the database
+        request_data = request.get_json()
+
+        # Check if the student exists
         sql = f"SELECT * FROM CLASSROOM WHERE CLASS_ID = {class_id};"
+        # Check will return ONE dictionary INSIDE a list
+        # If you want to access the values inside the dictionary,
+        # you must enter check[0]["STUDENT_ID"] to retrieve the number
         check = execute_read_query(connection, sql)
         if not check:
-            return "Classroom with the provided ID does not exist"
+            return "Classroom does not exist"
 
-        request_data = request.get_json()
+        # If STUDENT_ID is part of the body in POSTMAN, error will occur
+        if "CLASS_ID" in request_data.keys():
+            return "Cannot modify classroom ID"
+
+        allowed_keys = ["CLASS_CAPACITY", "CLASS_NAME", "FACILITY_ID"]
+        retrieved_keys = [key for key in request_data.keys()]
+
+        # If you put a key other than what's in allowed_keys such as JOB_CODE OR EMPLOYEE_CODE, then an error will show
+        for key in retrieved_keys:
+            if key not in allowed_keys:
+                return f"Invalid key(s) not allowed\n" \
+                       f"Keys must be: {', '.join(allowed_keys)}"
 
         sets = []
 
         if "CLASS_CAPACITY" in request_data.keys():
-            class_capacity = request_data["CLASS_CAPACITY"]
+            try:
+                class_capacity = int(request_data["CLASS_CAPACITY"])
+            except ValueError:
+                return "CLASS CAPACITY must be INTEGER"
             sets.append({"CLASS_CAPACITY": class_capacity})
 
         if "CLASS_NAME" in request_data.keys():
-            class_name = request_data["CLASS_NAME"]
+            class_name = str(request_data["CLASS_NAME"])
             sets.append({"CLASS_NAME": class_name})
 
         if "FACILITY_ID" in request_data.keys():
-            facility_id = request_data["FACILITY_ID"]
+            try:
+                facility_id = int(request_data["FACILITY_ID"])
+            except ValueError:
+                return "FACILITY ID must be INTEGER"
 
             facility_sql = f"SELECT FACILITY_ID FROM FACILITY;"
             facility = execute_read_query(connection, facility_sql)
