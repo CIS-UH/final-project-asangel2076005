@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <%- include('../partials/head'); %>
+    </head>
+
+    <body>
+        <main>
+            <% if (typeof login !== 'undefined' && login) { %>
+                <p>Credentials incorrrect</p>
+                <p><a href="/">Retry</a></p>
+            <% } %>
+
+            <!-- Facility Get Error -->
+            <% if (typeof facilityError !== 'undefined' && facilityError) { %>
+                <p><%= facilityError %></p>
+                <a href="/facility">Retry</a>
+            <% } %>
+
+            <!-- Facility Add Error -->
+            <% if (typeof facilityAddError !== 'undefined' && facilityAddError) { %>
+                <p>You entered: <%= addFacility["FACILITY_NAME"] %></p>
+                <p>Problem: <%= addFacilityStatement %></p>
+                <a href="/facility">Retry</a>
+            <% } %>
+
+            <!-- Facility Update Error: Non-existent Name -->
+            <% if (typeof updateFacilityError !== 'undefined' && updateFacilityError) { %>
+                <p><%= updateFacilityError %></p>
+                <a href="/facility">Retry</a>
+            <% } %>
+
+            <!-- Facility Update Error: API Side -->
+            <% if (typeof facilityUpdateError !== 'undefined' && facilityUpdateError) { %>
+                <p>You entered: <%= userFacility["FACILITY_NAME"] %></p>
+                <p>Problem: <%= updateFacilityStatement %></p>
+                <a href="/facility">Retry</a>
+            <% } %>
+
+            <!-- Facility Delete Error: Non-existent Name -->
+            <% if (typeof deleteFacilityError !== 'undefined' && deleteFacilityError) { %>
+                <p><%= deleteFacilityError %></p>
+                <a href="/facility">Retry</a>
+            <% } %>
+
+            <!-- Facility Delete Error: API Side -->
+            <% if (typeof facilityDeleteError !== 'undefined' && facilityDeleteError) { %>
+                <p>You entered: <%= userFacility["FACILITY_NAME"] %></p>
+                <p>Problem: <%= deleteFacilityStatement %></p>
+                <a href="/facility">Retry</a>
+            <% } %>
+        </main>
+
+        <footer>
+            <%- include('../partials/footer'); %>
+        </footer>
+    </body>
+</html>
