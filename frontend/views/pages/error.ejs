@@ -49,6 +49,12 @@
                 <p>Problem: <%= deleteFacilityStatement %></p>
                 <a href="/facility">Retry</a>
             <% } %>
+
+            <!-- Call API Error: General -->
+            <% if (typeof callError !== 'undefined' && callError) { %>
+                <p><%= callError %></p>
+                <a href="/facility">Retry</a>
+            <% } %>
         </main>
 
         <footer>

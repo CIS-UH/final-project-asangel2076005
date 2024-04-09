@@ -61,7 +61,7 @@ if __name__ == "__main__":
         for i in range(len(facility) - 1, -1, -1):  # start, stop, step size
             id_to_delete = facility[i]["FACILITY_ID"]
             if facility_id == id_to_delete:
-                delete_statement = f"Delete Success"
+                delete_statement = f"Facility Delete Success"
                 delete_query = f"DELETE FROM FACILITY WHERE FACILITY_ID = {facility_id}"
                 delete_sql = execute_query(connection, delete_query)
                 return delete_statement, delete_sql
@@ -133,12 +133,12 @@ if __name__ == "__main__":
                 return f"Invalid key(s) not allowed\n" \
                        f"Keys must be: {', '.join(allowed_keys)}"
 
-        facility_name = request_data["FACILITY_NAME"]
+        facility_name = request_data["FACILITY_NAME"].capitalize()
 
         sql = f"UPDATE FACILITY SET FACILITY_NAME = '{facility_name}' WHERE FACILITY_ID = {facility_id}"
         execute_query(connection, sql)
 
-        return "Update success"
+        return "Facility Update Success"
 
     # CLASSROOM
     # Retrieve all classroom entity instances from the database

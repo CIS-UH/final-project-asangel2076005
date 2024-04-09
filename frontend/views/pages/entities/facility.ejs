@@ -32,6 +32,14 @@
                     <h2>Update Facility</h2>
                     <ul>
                         <li>
+                            <label for="updateFacilityChoice">Facilities: </label>
+                            <select name="choice" id="updateFacilityChoice">
+                                <% for (let instance of facility) { %>
+                                    <option value="<%= instance["FACILITY_ID"] %>"><%= instance["FACILITY_NAME"] %></option>
+                                <% } %>
+                            </select>
+                        </li>
+                        <li>
                             <label for="FACILITY_NAME">Name: </label>
                             <input type="text" id="FACILITY_NAME" name="FACILITY_NAME" required>
                         </li>

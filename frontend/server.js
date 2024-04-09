@@ -6,6 +6,7 @@ const path = require("path");
 
 // required module to make calls to a REST API
 const axios = require('axios');
+const { userInfo } = require('os');
 app.use(bodyParser.urlencoded());
 
 // set the view engine to ejs
@@ -106,41 +107,34 @@ app.post("/add_facility", (req, res) => {
 
 // Update facility
 app.post("/update_facility", (req, res) => {
+
     let userFacility = req.body;
-    console.log(userFacility);
+    const choice = userFacility["choice"];
+    delete userFacility["choice"];
 
-    axios.get(`http://127.0.0.1:5000/api/facility`)
+    console.log(`Body ${userFacility["FACILITY_NAME"]}; Choice value: ${choice}`);
+
+    axios.put(`http://127.0.0.1:5000/api/facility/${choice}`, userFacility)
     .then(response => {
-        let facility = response.data;
-        let facilityId;
+        const updateFacilityStatement = response.data;
 
-        for (instance of facility) {
-            if (userFacility["FACILITY_NAME"].toUpperCase() === instance["FACILITY_NAME"].toUpperCase()) {
-                facilityId = instance["FACILITY_ID"];
-                break;
-            }
-        }
-
-        if (facilityId) { // Check if facilityId is set (i.e., a match is found)
-            axios.put(`http://127.0.0.1:5000/api/facility/${facilityId}`, userFacility)
-            .then(response => {
-                const updateFacilityStatement = response.data;
-                if (updateFacilityStatement === "Update success") {
-                    res.redirect("/facility");
-                } else {
-                    res.render("pages/error", {
-                        userFacility,
-                        updateFacilityStatement,
-                        facilityUpdateError: "Y"
-                    });
-                }
-            });
+        if (updateFacilityStatement == `Facility Update Success`) {
+            res.redirect("/facility");
         } else {
-            // Render error page if no match is found
-            const updateFacilityError = "No Matches";
-            res.render("pages/error", { updateFacilityError });
+            res.render("pages/error", {
+                userFacility,
+                updateFacilityStatement,
+                facilityUpdateError: "Y"
+            });
         }
+    
+    })
+    .catch(error => {
+        res.render("pages/error", {
+            callError: "Error fetching facility data from API"
+        })
     });
+    
 });
 
 // Delete facility
@@ -164,7 +158,7 @@ app.post("/delete_facility", (req, res) => {
             axios.delete(`http://127.0.0.1:5000/api/facility/${facilityId}`, userFacility)
             .then(response => {
                 const deleteFacilityStatement = response.data;
-                if (deleteFacilityStatement == `Delete Success`) {
+                if (deleteFacilityStatement == `Facility Delete Success`) {
                     res.redirect("/facility");
                 } else {
                     res.render("pages/error", {
