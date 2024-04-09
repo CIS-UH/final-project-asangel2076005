@@ -152,7 +152,6 @@ app.post("/delete_facility", (req, res) => {
             res.redirect("/facility");
         } else {
             res.render("pages/error", {
-                userFacility,
                 deleteFacilityStatement,
                 facilityDeleteError: "Y"
             });
@@ -281,7 +280,6 @@ app.post("/delete_classroom", (req, res) => {
             res.redirect("/classroom");
         } else {
             res.render("pages/error", {
-                userClassroom,
                 deleteClassroomStatement,
                 classroomDeleteError: "Y"
             });
@@ -389,7 +387,7 @@ app.post("/update_teacher", (req, res) => {
     })
     .catch(error => {
         res.render("pages/error", {
-            updateTeacherError: "Error fetching facility data from API"
+            updateTeacherError: "Error fetching teacher data from API"
         });
     });
 });
@@ -408,7 +406,6 @@ app.post("/delete_teacher", (req, res) => {
             res.redirect("/teacher");
         } else {
             res.render("pages/error", {
-                userTeacher,
                 deleteTeacherStatement,
                 teacherDeleteError: "Y"
             });
@@ -423,6 +420,131 @@ app.post("/delete_teacher", (req, res) => {
 
 });
 
+// Child
+// Child Webpage
+app.get("/child", (req, res) => {
+
+    axios.get(`http://127.0.0.1:5000/api/child`)
+    .then(childResponse => {
+        
+        // Callback hell is present here instead of using axios.all due to my database always timing out during 2 simultaneous api calls
+        axios.get(`http://127.0.0.1:5000/api/classroom`)
+        .then(classroomResponse => {
+
+            let child = childResponse.data;
+            let classroom = classroomResponse.data;
+            
+            res.render("pages/entities/child", {
+                child, classroom
+            });
+        })
+        .catch(error => {
+
+            let classroomError = "Error fetching classroom data from API"
+
+            res.render("pages/error", {
+                classroomError
+            });
+    
+        });
+
+    })
+    .catch(error => {
+
+        let childError = "Error fetching child data from API"
+
+        res.render("pages/error", {
+            childError
+        });
+
+    });
+    
+});
+
+// Add child
+app.post("/add_child", (req, res) => {
+
+    const addChild = req.body;
+    console.log(addChild);
+
+    axios.post('http://127.0.0.1:5000/api/child', addChild)
+        .then(response => {
+            const addChildStatement = response.data
+            
+            if (addChildStatement == "Child addition success") {
+                res.redirect("/child");
+            } else {
+                res.render("pages/error", {
+                    addChild, 
+                    addChildStatement,
+                    childAddError: "Y"
+                });
+            }
+        });
+});
+
+// Update child
+app.post("/update_child", (req, res) => {
+    let userChild = req.body;
+    const choice = userChild["choice"];
+    delete userChild["choice"];
+
+    // Deletes inputs not provided by the user
+    for (let key in userChild) {
+        if (userChild[key].trim() === '') {
+            delete userChild[key]; // Remove the property if its value is empty or whitespace
+        } 
+    }
+
+    axios.put(`http://127.0.0.1:5000/api/child/${choice}`, userChild)
+    .then(response => {
+        const updateChildStatement = response.data;
+
+        if (updateChildStatement == `Update success`) {
+            res.redirect("/child");
+        } else {
+            res.render("pages/error", {
+                userChild,
+                updateChildStatement,
+                childUpdateError: "Y"
+            });
+        }
+    
+    })
+    .catch(error => {
+        res.render("pages/error", {
+            updateChildError: "Error fetching child data from API"
+        });
+    });
+});
+
+// Delete Child
+app.post("/delete_child", (req, res) => {
+
+    const choice = req.body["choice"];
+    console.log(choice);
+
+    axios.delete(`http://127.0.0.1:5000/api/child/${choice}`)
+    .then(response => {
+        const deleteChildStatement = response.data;
+
+        if (deleteChildStatement == `Delete Child Success`) {
+            res.redirect("/child");
+        } else {
+            res.render("pages/error", {
+                deleteChildStatement,
+                childDeleteError: "Y"
+            });
+        }
+    
+    })
+    .catch(error => {
+        res.render("pages/error", {
+            deleteChildError: "Cannot delete child: Referenced by other entities in other table"
+        });
+    });
+
+});
 
 // Start the express application on port 8080 and print server start message
 const port = 8080;

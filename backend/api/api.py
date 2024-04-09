@@ -64,8 +64,8 @@ if __name__ == "__main__":
                 delete_query = f"DELETE FROM FACILITY WHERE FACILITY_ID = {facility_id}"
                 delete_sql = execute_query(connection, delete_query)
                 check_sql = f"SELECT * FROM FACILITY WHERE FACILITY_ID = {facility_id}"
-                check_facility = execute_read_query(connection, check_sql)
-                if check_facility:
+                check = execute_read_query(connection, check_sql)
+                if check:
                     return "Cannot delete facility: Referenced by other entities in other table"
                 delete_statement = f"Facility Delete Success"
                 return delete_statement, delete_sql
@@ -175,8 +175,8 @@ if __name__ == "__main__":
                 delete_query = f"DELETE FROM CLASSROOM WHERE CLASS_ID = {class_id}"
                 delete_sql = execute_query(connection, delete_query)
                 check_sql = f"SELECT * FROM CLASSROOM WHERE CLASS_ID = {class_id}"
-                check_facility = execute_read_query(connection, check_sql)
-                if check_facility:
+                check = execute_read_query(connection, check_sql)
+                if check:
                     return "Cannot delete classroom: Referenced by other entities in other table"
                 delete_statement = f"Classroom Delete Success"
                 return delete_statement, delete_sql
@@ -333,8 +333,8 @@ if __name__ == "__main__":
                 delete_query = f"DELETE FROM TEACHER WHERE TEACHER_ID = {teacher_id}"
                 delete_sql = execute_query(connection, delete_query)
                 check_sql = f"SELECT * FROM TEACHER WHERE TEACHER_ID = {teacher_id}"
-                check_facility = execute_read_query(connection, check_sql)
-                if check_facility:
+                check = execute_read_query(connection, check_sql)
+                if check:
                     return "Cannot delete Teacher: Referenced by other entities in other table"
                 delete_statement = f"Delete Teacher Success"
                 return delete_statement, delete_sql
@@ -534,11 +534,13 @@ if __name__ == "__main__":
         for i in range(len(child) - 1, -1, -1):  # start, stop, step size
             id_to_delete = child[i]["CHILD_ID"]
             if child_id == id_to_delete:
-                first_name = child[i]["CHILD_FNAME"]
-                last_name = child[i]["CHILD_LNAME"]
-                delete_statement = f"Successfully deleted {first_name} {last_name} from the database"
                 delete_query = f"DELETE FROM CHILD WHERE CHILD_ID = {child_id}"
                 delete_sql = execute_query(connection, delete_query)
+                check_sql = f"SELECT * FROM CHILD WHERE CHILD_ID = {child_id}"
+                check = execute_read_query(connection, check_sql)
+                if check:
+                    return "Cannot delete Child: Referenced by other entities in other table"
+                delete_statement = "Delete Child Success"
                 return delete_statement, delete_sql
 
         return "Invalid ID"
@@ -578,8 +580,8 @@ if __name__ == "__main__":
                 return f"Error: Insufficient data. make sure {' '.join(missing_keys)} is included"
 
         try:
-            first_name = str(request_data["CHILD_FNAME"])
-            last_name = str(request_data["CHILD_LNAME"])
+            first_name = str(request_data["CHILD_FNAME"].capitalize())
+            last_name = str(request_data["CHILD_LNAME"].capitalize())
             age = int(request_data["CHILD_AGE"])
             class_id = int(request_data["CLASS_ID"])
         except ValueError:
@@ -646,11 +648,11 @@ if __name__ == "__main__":
         sets = []
 
         if "CHILD_FNAME" in request_data.keys():
-            first_name = str(request_data["CHILD_FNAME"])
+            first_name = str(request_data["CHILD_FNAME"].capitalize())
             sets.append({"CHILD_FNAME": first_name})
 
         if "CHILD_LNAME" in request_data.keys():
-            last_name = str(request_data["CHILD_LNAME"])
+            last_name = str(request_data["CHILD_LNAME"].capitalize())
             sets.append({"CHILD_LNAME": last_name})
 
         if "CHILD_AGE" in request_data.keys():

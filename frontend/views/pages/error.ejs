@@ -121,10 +121,46 @@
 
             <!-- Teacher Delete Error: API Side -->
             <% if (typeof teacherDeleteError !== 'undefined' && teacherDeleteError) { %>
-                <p>Problem: <%= teacherClassroomStatement %></p>
+                <p>Problem: <%= deleteTeacherStatement %></p>
                 <a href="/teacher">Retry</a>
             <% } %>
 
+            <!-- Child Get Error -->
+            <% if (typeof childError !== 'undefined' && childError) { %>
+                <p><%= childError %></p>
+                <a href="/child">Retry</a>
+            <% } %>
+
+            <!-- Child Add Error -->
+            <% if (typeof childAddError !== 'undefined' && childAddError) { %>
+                <p>You entered: <%= addChild["CHILD_FNAME"] %> <%= addChild["CHILD_LNAME"] %> <%= addChild["CHILD_AGE"] %></p>
+                <p>Problem: <%= addChildStatement %></p>
+                <a href="/child">Retry</a>
+            <% } %>
+
+            <!-- Child Update Error: Non-existent Name -->
+            <% if (typeof updateChildError !== 'undefined' && updateChildError) { %>
+                <p><%= updateChildError %></p>
+                <a href="/child">Retry</a>
+            <% } %>
+
+            <!-- Child Update Error: API Side -->
+            <% if (typeof childUpdateError !== 'undefined' && childUpdateError) { %>
+                <p>Problem: <%= updateChildStatement %></p>
+                <a href="/child">Retry</a>
+            <% } %>
+
+            <!-- Child Delete Error: Non-existent Name -->
+            <% if (typeof deleteChildError !== 'undefined' && deleteChildError) { %>
+                <p><%= deleteChildError %></p>
+                <a href="/child">Retry</a>
+            <% } %>
+
+            <!-- Child Delete Error: API Side -->
+            <% if (typeof childDeleteError !== 'undefined' && childDeleteError) { %>
+                <p>Problem: <%= deleteChildStatement %></p>
+                <a href="/child">Retry</a>
+            <% } %>
         </main>
 
         <footer>
