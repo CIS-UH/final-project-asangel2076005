@@ -87,6 +87,44 @@
                 <p>Problem: <%= deleteClassroomStatement %></p>
                 <a href="/classroom">Retry</a>
             <% } %>
+
+            <!-- Teacher Get Error -->
+            <% if (typeof teacherError !== 'undefined' && teacherError) { %>
+                <p><%= teacherError %></p>
+                <a href="/teacher">Retry</a>
+            <% } %>
+
+            <!-- Teacher Add Error -->
+            <% if (typeof teacherAddError !== 'undefined' && teacherAddError) { %>
+                <p>You entered: <%= addTeacher["TEACHER_FNAME"] %> <%= addTeacher["TEACHER_LNAME"] %></p>
+                <p>Problem: <%= addTeacherStatement %></p>
+                <a href="/teacher">Retry</a>
+            <% } %>
+
+            <!-- Teacher Update Error: Non-existent Name -->
+            <% if (typeof updateTeacherError !== 'undefined' && updateTeacherError) { %>
+                <p><%= updateTeacherError %></p>
+                <a href="/teacher">Retry</a>
+            <% } %>
+
+            <!-- Teacher Update Error: API Side -->
+            <% if (typeof teacherUpdateError !== 'undefined' && teacherUpdateError) { %>
+                <p>Problem: <%= updateTeacherStatement %></p>
+                <a href="/teacher">Retry</a>
+            <% } %>
+
+            <!-- Teacher Delete Error: Non-existent Name -->
+            <% if (typeof deleteTeacherError !== 'undefined' && deleteTeacherError) { %>
+                <p><%= deleteTeacherError %></p>
+                <a href="/teacher">Retry</a>
+            <% } %>
+
+            <!-- Teacher Delete Error: API Side -->
+            <% if (typeof teacherDeleteError !== 'undefined' && teacherDeleteError) { %>
+                <p>Problem: <%= teacherClassroomStatement %></p>
+                <a href="/teacher">Retry</a>
+            <% } %>
+
         </main>
 
         <footer>

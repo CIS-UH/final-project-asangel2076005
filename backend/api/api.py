@@ -330,11 +330,13 @@ if __name__ == "__main__":
         for i in range(len(teacher) - 1, -1, -1):  # start, stop, step size
             id_to_delete = teacher[i]["TEACHER_ID"]
             if teacher_id == id_to_delete:
-                first_name = teacher[i]["TEACHER_FNAME"]
-                last_name = teacher[i]["TEACHER_LNAME"]
-                delete_statement = f"Successfully deleted {first_name} {last_name} from the database"
                 delete_query = f"DELETE FROM TEACHER WHERE TEACHER_ID = {teacher_id}"
                 delete_sql = execute_query(connection, delete_query)
+                check_sql = f"SELECT * FROM TEACHER WHERE TEACHER_ID = {teacher_id}"
+                check_facility = execute_read_query(connection, check_sql)
+                if check_facility:
+                    return "Cannot delete Teacher: Referenced by other entities in other table"
+                delete_statement = f"Delete Teacher Success"
                 return delete_statement, delete_sql
 
         return "Invalid ID"
@@ -374,8 +376,8 @@ if __name__ == "__main__":
                 return f"Error: Insufficient data. make sure {' '.join(missing_keys)} is included"
 
         try:
-            first_name = str(request_data["TEACHER_FNAME"])
-            last_name = str(request_data["TEACHER_LNAME"])
+            first_name = str(request_data["TEACHER_FNAME"].capitalize())
+            last_name = str(request_data["TEACHER_LNAME"].capitalize())
             class_id = int(request_data["CLASS_ID"])
         except ValueError:
             return "CLASS ID must be integer"
@@ -402,7 +404,7 @@ if __name__ == "__main__":
         # For circumstances where a classroom has no students but has a capacity
         if (num_students == 0) and (num_teacher == 0):
             execute_query(connection, add_query)
-            return "Addition Success"
+            return "Teacher addition success"
 
         for room in classroom:
             if room["CLASS_ID"] == class_id:
@@ -446,11 +448,11 @@ if __name__ == "__main__":
         sets = []
 
         if "TEACHER_FNAME" in request_data.keys():
-            first_name = str(request_data["TEACHER_FNAME"])
+            first_name = str(request_data["TEACHER_FNAME"].capitalize())
             sets.append({"TEACHER_FNAME": first_name})
 
         if "TEACHER_LNAME" in request_data.keys():
-            last_name = str(request_data["TEACHER_LNAME"])
+            last_name = str(request_data["TEACHER_LNAME"].capitalize())
             sets.append({"TEACHER_LNAME": last_name})
 
         if "CLASS_ID" in request_data.keys():
@@ -706,4 +708,4 @@ if __name__ == "__main__":
 
         return "Update success"
 
-    app.run()
+    app.run(threaded=True)

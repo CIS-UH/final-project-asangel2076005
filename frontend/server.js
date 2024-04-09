@@ -262,7 +262,7 @@ app.post("/update_classroom", (req, res) => {
     .catch(error => {
         res.render("pages/error", {
             updateClassroomError: "Error fetching facility data from API"
-        })
+        });
     });
 });
 
@@ -291,7 +291,134 @@ app.post("/delete_classroom", (req, res) => {
     .catch(error => {
         res.render("pages/error", {
             deleteClassroomError: "Cannot delete classroom: Referenced by other entities in other table"
+        });
+    });
+
+});
+
+// Teacher
+// Teacher Webpage
+app.get("/teacher", (req, res) => {
+
+    axios.get(`http://127.0.0.1:5000/api/teacher`)
+    .then(teacherResponse => {
+        
+        // Callback hell is present here instead of using axios.all due to my database always timing out during 2 simultaneous api calls
+        axios.get(`http://127.0.0.1:5000/api/classroom`)
+        .then(classroomResponse => {
+
+            let teacher = teacherResponse.data;
+            let classroom = classroomResponse.data;
+            
+            res.render("pages/entities/teacher", {
+                teacher, classroom
+            });
         })
+        .catch(error => {
+
+            let classroomError = "Error fetching classroom data from API"
+
+            res.render("pages/error", {
+                classroomError
+            });
+    
+        });
+
+    })
+    .catch(error => {
+
+        let teacherError = "Error fetching teacher data from API"
+
+        res.render("pages/error", {
+            teacherError
+        });
+
+    });
+    
+});
+
+// Add teacher
+app.post("/add_teacher", (req, res) => {
+
+    const addTeacher = req.body;
+    console.log(addTeacher);
+
+    axios.post('http://127.0.0.1:5000/api/teacher', addTeacher)
+        .then(response => {
+            const addTeacherStatement = response.data
+            
+            if (addTeacherStatement == "Teacher addition success") {
+                res.redirect("/teacher");
+            } else {
+                res.render("pages/error", {
+                    addTeacher, 
+                    addTeacherStatement,
+                    teacherAddError: "Y"
+                });
+            }
+        });
+});
+
+// Update teacher
+app.post("/update_teacher", (req, res) => {
+    let userTeacher = req.body;
+    const choice = userTeacher["choice"];
+    delete userTeacher["choice"];
+
+    // Deletes inputs not provided by the user
+    for (let key in userTeacher) {
+        if (userTeacher[key].trim() === '') {
+            delete userTeacher[key]; // Remove the property if its value is empty or whitespace
+        } 
+    }
+
+    axios.put(`http://127.0.0.1:5000/api/teacher/${choice}`, userTeacher)
+    .then(response => {
+        const updateTeacherStatement = response.data;
+
+        if (updateTeacherStatement == `Update success`) {
+            res.redirect("/teacher");
+        } else {
+            res.render("pages/error", {
+                userTeacher,
+                updateTeacherStatement,
+                teacherUpdateError: "Y"
+            });
+        }
+    
+    })
+    .catch(error => {
+        res.render("pages/error", {
+            updateTeacherError: "Error fetching facility data from API"
+        });
+    });
+});
+
+// Delete Teacher
+app.post("/delete_teacher", (req, res) => {
+
+    const choice = req.body["choice"];
+    console.log(choice);
+
+    axios.delete(`http://127.0.0.1:5000/api/teacher/${choice}`)
+    .then(response => {
+        const deleteTeacherStatement = response.data;
+
+        if (deleteTeacherStatement == `Delete Teacher Success`) {
+            res.redirect("/teacher");
+        } else {
+            res.render("pages/error", {
+                userTeacher,
+                deleteTeacherStatement,
+                teacherDeleteError: "Y"
+            });
+        }
+    
+    })
+    .catch(error => {
+        res.render("pages/error", {
+            deleteTeacherError: "Cannot delete teacher: Referenced by other entities in other table"
+        });
     });
 
 });

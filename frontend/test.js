@@ -1,28 +1,28 @@
-// Delete Facility
-app.post("/delete_facility", (req, res) => {
+// Delete Teacher
+app.post("/delete_teacher", (req, res) => {
 
     const choice = req.body["choice"];
     console.log(choice);
 
-    axios.delete(`http://127.0.0.1:5000/api/classroom/${choice}`)
+    axios.delete(`http://127.0.0.1:5000/api/teacher/${choice}`)
     .then(response => {
-        const deleteFacilityStatement = response.data;
+        const deleteTeacherStatement = response.data;
 
-        if (deleteFacilityStatement == `Classroom Delete Success`) {
-            res.redirect("/facility");
+        if (deleteTeacherStatement == `Delete Teacher Success`) {
+            res.redirect("/teacher");
         } else {
             res.render("pages/error", {
-                userFacility,
-                deleteFacilityStatement,
-                facilityDeleteError: "Y"
+                userTeacher,
+                deleteTeacherStatement,
+                teacherDeleteError: "Y"
             });
         }
     
     })
     .catch(error => {
         res.render("pages/error", {
-            deleteFacilityError: "Cannot delete facility: Referenced by other entities in other table"
-        })
+            deleteTeacherError: "Cannot delete teacher: Referenced by other entities in other table"
+        });
     });
 
 });

@@ -12,7 +12,7 @@
         <main>
             <h1>Facility</h1>
             <!--If Facility exists, render a table; otherwise throw an error paragraph-->
-            <% if (facility) { %>
+            <% if (typeof facility !== "undefined" && facility) { %>
 
                 <!--Add a facility-->
                 <form action="/add_facility" method="post">
