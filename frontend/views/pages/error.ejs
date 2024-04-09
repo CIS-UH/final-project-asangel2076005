@@ -50,10 +50,42 @@
                 <a href="/facility">Retry</a>
             <% } %>
 
-            <!-- Call API Error: General -->
-            <% if (typeof callError !== 'undefined' && callError) { %>
-                <p><%= callError %></p>
-                <a href="/facility">Retry</a>
+            <!-- Classroom Get Error -->
+            <% if (typeof classroomError !== 'undefined' && classroomError) { %>
+                <p><%= classroomError %></p>
+                <a href="/classroom">Retry</a>
+            <% } %>
+
+            <!-- Classroom Add Error -->
+            <% if (typeof classroomAddError !== 'undefined' && classroomAddError) { %>
+                <p>You entered: <%= addClassroom["CLASS_NAME"] %> and <%= addClassroom["CLASS_CAPACITY"] %></p>
+                <p>Problem: <%= addClassroomStatement %></p>
+                <a href="/classroom">Retry</a>
+            <% } %>
+
+            <!-- Classroom Update Error: Non-existent Name -->
+            <% if (typeof updateClassroomError !== 'undefined' && updateClassroomError) { %>
+                <p><%= updateClassroomError %></p>
+                <a href="/classroom">Retry</a>
+            <% } %>
+
+            <!-- Classroom Update Error: API Side -->
+            <% if (typeof classroomUpdateError !== 'undefined' && classroomUpdateError) { %>
+                <p>You entered: <%= userClassroom["CLASS_NAME"] %></p>
+                <p>Problem: <%= updateClassroomStatement %></p>
+                <a href="/classroom">Retry</a>
+            <% } %>
+
+            <!-- Classroom Delete Error: Non-existent Name -->
+            <% if (typeof deleteClassroomError !== 'undefined' && deleteClassroomError) { %>
+                <p><%= deleteClassroomError %></p>
+                <a href="/classroom">Retry</a>
+            <% } %>
+
+            <!-- Classroom Delete Error: API Side -->
+            <% if (typeof classroomDeleteError !== 'undefined' && classroomDeleteError) { %>
+                <p>Problem: <%= deleteClassroomStatement %></p>
+                <a href="/classroom">Retry</a>
             <% } %>
         </main>
 

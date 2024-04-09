@@ -10,26 +10,27 @@
         </header>
 
         <main>
+            <h1>Facility</h1>
             <!--If Facility exists, render a table; otherwise throw an error paragraph-->
             <% if (facility) { %>
 
                 <!--Add a facility-->
                 <form action="/add_facility" method="post">
-                    <h2>Add Facility</h2>
+                    <h2>Add</h2>
                     <ul>
                         <li>
                             <label for="FACILITY_NAME">Name: </label>
                             <input type="text" id="FACILITY_NAME" name="FACILITY_NAME" required>
                         </li>
                         <li>
-                            <button type="submit">Add Facility</button>
+                            <button type="submit">Add</button>
                         </li>
                     </ul>
                 </form>
 
                 <!-- Update a facility -->
                 <form action="/update_facility" method="post">
-                    <h2>Update Facility</h2>
+                    <h2>Update</h2>
                     <ul>
                         <li>
                             <label for="updateFacilityChoice">Facilities: </label>
@@ -44,25 +45,29 @@
                             <input type="text" id="FACILITY_NAME" name="FACILITY_NAME" required>
                         </li>
                         <li>
-                            <button type="submit">Update Facility</button>
+                            <button type="submit">Update</button>
                         </li>
                     </ul>
                 </form>
 
                 <!-- Delete a facility -->
                 <form action="/delete_facility" method="post">
-                    <h2>Delete Facility</h2>
+                    <h2>Delete</h2>
                     <ul>
                         <li>
-                            <label for="FACILITY_NAME">Name: </label>
-                            <input type="text" id="FACILITY_NAME" name="FACILITY_NAME" required>
+                            <label for="deleteFacilityChoice">Facility: </label>
+                            <select name="choice" id="deleteFacilityChoice" required>
+                                <option value=""></option>
+                                <% for (let instance of facility) { %>
+                                    <option value="<%= instance["FACILITY_ID"] %>"><%= instance["FACILITY_NAME"] %></option>
+                                <% } %>
+                            </select>
                         </li>
                         <li>
-                            <button type="submit">Delete Facility</button>
+                            <button type="submit">Delete</button>
                         </li>
                     </ul>
                 </form>
-
                 <!--Quick Table Summary: Get All-->
                 <table>
                     <tr>

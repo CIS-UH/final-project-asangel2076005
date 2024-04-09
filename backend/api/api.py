@@ -61,9 +61,13 @@ if __name__ == "__main__":
         for i in range(len(facility) - 1, -1, -1):  # start, stop, step size
             id_to_delete = facility[i]["FACILITY_ID"]
             if facility_id == id_to_delete:
-                delete_statement = f"Facility Delete Success"
                 delete_query = f"DELETE FROM FACILITY WHERE FACILITY_ID = {facility_id}"
                 delete_sql = execute_query(connection, delete_query)
+                check_sql = f"SELECT * FROM FACILITY WHERE FACILITY_ID = {facility_id}"
+                check_facility = execute_read_query(connection, check_sql)
+                if check_facility:
+                    return "Cannot delete facility: Referenced by other entities in other table"
+                delete_statement = f"Facility Delete Success"
                 return delete_statement, delete_sql
 
         return "Invalid ID"
@@ -168,9 +172,13 @@ if __name__ == "__main__":
         for i in range(len(classroom) - 1, -1, -1):  # start, stop, step size
             id_to_delete = classroom[i]["CLASS_ID"]
             if class_id == id_to_delete:
-                delete_statement = f"Successfully deleted {classroom[i]['CLASS_NAME']} from the database"
                 delete_query = f"DELETE FROM CLASSROOM WHERE CLASS_ID = {class_id}"
                 delete_sql = execute_query(connection, delete_query)
+                check_sql = f"SELECT * FROM CLASSROOM WHERE CLASS_ID = {class_id}"
+                check_facility = execute_read_query(connection, check_sql)
+                if check_facility:
+                    return "Cannot delete classroom: Referenced by other entities in other table"
+                delete_statement = f"Classroom Delete Success"
                 return delete_statement, delete_sql
 
         return "Invalid ID"
@@ -211,7 +219,7 @@ if __name__ == "__main__":
 
         try:
             class_capacity = int(request_data["CLASS_CAPACITY"])
-            class_name = request_data["CLASS_NAME"]
+            class_name = request_data["CLASS_NAME"].capitalize()
             facility_id = int(request_data["FACILITY_ID"])
         except ValueError:
             return "CLASS CAPACITY and FACILITY ID must be integer"
@@ -264,7 +272,7 @@ if __name__ == "__main__":
             sets.append({"CLASS_CAPACITY": class_capacity})
 
         if "CLASS_NAME" in request_data.keys():
-            class_name = str(request_data["CLASS_NAME"])
+            class_name = str(request_data["CLASS_NAME"].capitalize())
             sets.append({"CLASS_NAME": class_name})
 
         if "FACILITY_ID" in request_data.keys():
@@ -292,7 +300,7 @@ if __name__ == "__main__":
                     update_sql = f"UPDATE CLASSROOM SET {key} = '{value}' WHERE CLASS_ID = {class_id};"
                 execute_query(connection, update_sql)
 
-        return "Update success"
+        return "Classroom Update success"
 
     # TEACHER
     # Retrieve all teacher entity instances from the database

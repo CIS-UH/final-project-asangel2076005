@@ -1,38 +1,28 @@
-// Update facility
-app.post("/update_facility", (req, res) => {
-    let userFacility = req.body;
-    console.log(userFacility);
+// Delete Facility
+app.post("/delete_facility", (req, res) => {
 
-    axios.get(`http://127.0.0.1:5000/api/facility`)
+    const choice = req.body["choice"];
+    console.log(choice);
+
+    axios.delete(`http://127.0.0.1:5000/api/classroom/${choice}`)
     .then(response => {
-        let facility = response.data;
-        let facilityId;
+        const deleteFacilityStatement = response.data;
 
-        for (instance of facility) {
-            if (userFacility["FACILITY_NAME"].toUpperCase() === instance["FACILITY_NAME"].toUpperCase()) {
-                facilityId = instance["FACILITY_ID"];
-                break;
-            }
-        }
-
-        if (facilityId) { // Check if facilityId is set (i.e., a match is found)
-            axios.put(`http://127.0.0.1:5000/api/facility/${facilityId}`, userFacility)
-            .then(response => {
-                const updateFacilityStatement = response.data;
-                if (updateFacilityStatement === "Update success") {
-                    res.redirect("/facility");
-                } else {
-                    res.render("pages/error", {
-                        userFacility,
-                        updateFacilityStatement,
-                        facilityUpdateError: "Y"
-                    });
-                }
-            });
+        if (deleteFacilityStatement == `Classroom Delete Success`) {
+            res.redirect("/facility");
         } else {
-            // Render error page if no match is found
-            const updateFacilityError = "No Matches";
-            res.render("pages/error", { updateFacilityError });
+            res.render("pages/error", {
+                userFacility,
+                deleteFacilityStatement,
+                facilityDeleteError: "Y"
+            });
         }
+    
+    })
+    .catch(error => {
+        res.render("pages/error", {
+            deleteFacilityError: "Cannot delete facility: Referenced by other entities in other table"
+        })
     });
+
 });

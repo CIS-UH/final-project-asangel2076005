@@ -7,6 +7,7 @@ const path = require("path");
 // required module to make calls to a REST API
 const axios = require('axios');
 const { userInfo } = require('os');
+const { Console } = require('console');
 app.use(bodyParser.urlencoded());
 
 // set the view engine to ejs
@@ -131,50 +132,170 @@ app.post("/update_facility", (req, res) => {
     })
     .catch(error => {
         res.render("pages/error", {
-            callError: "Error fetching facility data from API"
+            updateFacilityError: "Error fetching facility data from API"
         })
     });
     
 });
 
-// Delete facility
+// Delete Facility
 app.post("/delete_facility", (req, res) => {
-    let userFacility = req.body;
-    console.log(userFacility);
 
-    axios.get(`http://127.0.0.1:5000/api/facility`)
+    const choice = req.body["choice"];
+    console.log(choice);
+
+    axios.delete(`http://127.0.0.1:5000/api/facility/${choice}`)
     .then(response => {
-        let facility = response.data;
-        let facilityId;
+        const deleteFacilityStatement = response.data;
 
-        for (instance of facility) {
-            if (userFacility["FACILITY_NAME"].toUpperCase() === instance["FACILITY_NAME"].toUpperCase()) {
-                facilityId = instance["FACILITY_ID"];
-                break;
-            }
-        }
-
-        if (facilityId) { // Check if facilityId is set (i.e., a match is found)
-            axios.delete(`http://127.0.0.1:5000/api/facility/${facilityId}`, userFacility)
-            .then(response => {
-                const deleteFacilityStatement = response.data;
-                if (deleteFacilityStatement == `Facility Delete Success`) {
-                    res.redirect("/facility");
-                } else {
-                    res.render("pages/error", {
-                        userFacility,
-                        deleteFacilityStatement,
-                        facilityDeleteError: "Y"
-                    });
-                }
-            });
+        if (deleteFacilityStatement == `Facility Delete Success`) {
+            res.redirect("/facility");
         } else {
-            // Render error page if no match is found
-            const deleteFacilityError = "No Matches";
-            res.render("pages/error", { deleteFacilityError });
+            res.render("pages/error", {
+                userFacility,
+                deleteFacilityStatement,
+                facilityDeleteError: "Y"
+            });
         }
+    
+    })
+    .catch(error => {
+        res.render("pages/error", {
+            deleteFacilityError: "Cannot delete facility: Referenced by other entities in other table"
+        })
+    });
+
+});
+
+// Classroom
+// Classroom Webpage
+app.get("/classroom", (req, res) => {
+
+    axios.get(`http://127.0.0.1:5000/api/classroom`)
+    .then(classroomResponse => {
+        
+        let classroom = classroomResponse.data;
+
+        // Callback hell is present here instead of using axios.all due to my database always timing out during 2 simultaneous api calls
+        axios.get(`http://127.0.0.1:5000/api/facility`)
+        .then(facilityResponse => {
+
+            let facility = facilityResponse.data;
+
+            res.render("pages/entities/classroom", {
+                classroom, facility
+            });
+        })
+        .catch(error => {
+
+            let facilityError = "Error fetching facility data from API"
+
+            res.render("pages/error", {
+                facilityError
+            });
+    
+        });
+
+    })
+    .catch(error => {
+
+        let classroomError = "Error fetching classroom data from API"
+
+        res.render("pages/error", {
+            classroomError
+        });
+
+    });
+    
+});
+
+// Add classroom
+app.post("/add_classroom", (req, res) => {
+
+    const addClassroom = req.body;
+    console.log(addClassroom);
+
+    axios.post('http://127.0.0.1:5000/api/classroom', addClassroom)
+        .then(response => {
+            const addClassroomStatement = response.data
+            
+            if (addClassroomStatement === "Classroom addition success") {
+                res.redirect("/classroom");
+            } else {
+                res.render("pages/error", {
+                    addClassroom, 
+                    addClassroomStatement,
+                    classroomAddError: "Y"
+                });
+            }
+        });
+});
+
+// Update classroom
+app.post("/update_classroom", (req, res) => {
+    let userClassroom = req.body;
+    const choice = userClassroom["choice"];
+    delete userClassroom["choice"];
+
+    // Deletes inputs not provided by the user
+    for (let key in userClassroom) {
+        if (userClassroom[key].trim() === '') {
+            delete userClassroom[key]; // Remove the property if its value is empty or whitespace
+        } 
+    }
+
+    axios.put(`http://127.0.0.1:5000/api/classroom/${choice}`, userClassroom)
+    .then(response => {
+        const updateClassroomStatement = response.data;
+
+        if (updateClassroomStatement == `Classroom Update success`) {
+            res.redirect("/classroom");
+        } else {
+            res.render("pages/error", {
+                userClassroom,
+                updateClassroomStatement,
+                classroomUpdateError: "Y"
+            });
+        }
+    
+    })
+    .catch(error => {
+        res.render("pages/error", {
+            updateClassroomError: "Error fetching facility data from API"
+        })
     });
 });
+
+
+// Delete Classroom
+app.post("/delete_classroom", (req, res) => {
+
+    const choice = req.body["choice"];
+    console.log(choice);
+
+    axios.delete(`http://127.0.0.1:5000/api/classroom/${choice}`)
+    .then(response => {
+        const deleteClassroomStatement = response.data;
+
+        if (deleteClassroomStatement == `Classroom Delete Success`) {
+            res.redirect("/classroom");
+        } else {
+            res.render("pages/error", {
+                userClassroom,
+                deleteClassroomStatement,
+                classroomDeleteError: "Y"
+            });
+        }
+    
+    })
+    .catch(error => {
+        res.render("pages/error", {
+            deleteClassroomError: "Cannot delete classroom: Referenced by other entities in other table"
+        })
+    });
+
+});
+
 
 // Start the express application on port 8080 and print server start message
 const port = 8080;
