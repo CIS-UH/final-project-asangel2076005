@@ -1,5 +1,6 @@
 import flask
 from flask import jsonify, request
+from flask_cors import CORS
 from self_made_modules.sql_helper import create_connection, execute_read_query, execute_query
 from self_made_modules import creds
 
@@ -8,6 +9,7 @@ if __name__ == "__main__":
     # setting up an application name
     app = flask.Flask(__name__)  # sets up the application
     app.config["DEBUG"] = True  # allow to show errors in browser
+    CORS(app)
 
     my_creds = creds.Creds()
     connection = create_connection(my_creds.connection_string,
@@ -709,5 +711,32 @@ if __name__ == "__main__":
                 execute_query(connection, update_sql)
 
         return "Update success"
+
+    # Extra API Calls
+    # Child Webpage Functionality: Find seats remaining for user information
+    @app.route("/api/capacity", methods=["GET"])
+    def retrieve_capacity():
+        sql = """SELECT C.CLASS_ID, CLASS_NAME, FACILITY_ID, CLASS_CAPACITY, COUNT(CHILD_ID) AS CHILD_AMT, 
+                    (CLASS_CAPACITY - COUNT(CHILD_ID)) AS SEATS_REMAINING
+                    FROM CLASSROOM C
+                    JOIN CHILD CH ON C.CLASS_ID = CH.CLASS_ID
+                    GROUP BY C.CLASS_ID
+                    ORDER BY C.CLASS_ID;"""
+        capacity = execute_read_query(connection, sql)
+
+        return jsonify(capacity)
+
+    # Teacher Webpage Functionality: Find teacher spaces remaining for user information
+    @app.route("/api/space", methods=["GET"])
+    def retrieve_space():
+        sql = """SELECT C.CLASS_ID, CLASS_NAME, FACILITY_ID, CEIL(CLASS_CAPACITY / 10) AS ROUNDED_CAPACITY, 
+                COUNT(TEACHER_ID) AS TEACHER_AMT, (CEIL(CLASS_CAPACITY / 10) - COUNT(TEACHER_ID)) AS SPACE_REMAINING
+                FROM CLASSROOM C
+                JOIN TEACHER T ON C.CLASS_ID = T.CLASS_ID
+                GROUP BY C.CLASS_ID
+                ORDER BY C.CLASS_ID;"""
+        space = execute_read_query(connection, sql)
+
+        return jsonify(space)
 
     app.run(threaded=True)

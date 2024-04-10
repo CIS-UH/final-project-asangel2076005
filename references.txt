@@ -1,0 +1,5 @@
+Add promise call (used by classcapacity.js)
+https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises
+
+Used flask_cors library to disable CORS blocking my fetch call of my api to the server.js
+pip install flask_cors

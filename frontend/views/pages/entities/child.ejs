@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <%- include('../../partials/head'); %>
+        <script src="childcapacity.js" defer></script>
     </head>
 
     <body>
@@ -13,6 +14,36 @@
             <h1>Child</h1>
             <!--If Child and Classroom exists, render a table; otherwise throw an error paragraph-->
             <% if ((typeof child !== "undefined" && typeof classroom !== "undefined") && (child && classroom)) { %>
+
+                <!-- Find classroom capacity -->
+                <div class="find-room-capacity">
+                    <h2>Find Room Capacity</h2>
+                    <ul>
+                        <li>
+                            <label for="findRoom">Classroom: </label>
+                                <select name="findRoom" id="findRoom">
+                                    <% for (let instance of classroom) { %>
+                                        <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
+                                    <% } %>
+                                </select>
+                        </li>
+                        <li>
+                            <label for="findCapacity">Capacity: </label>
+                            <input type="text" id="findCapacity" name="findCapacity" readonly>
+                        </li>
+                        <li>
+                            <label for="findChildAmt">Total Children: </label>
+                            <input type="text" id="findChildAmt" name="findChildAmt" readonly>
+                        </li>
+                        <li>
+                            <label for="findSeatsRemain">Seats Remaining: </label>
+                            <input type="text" id="findSeatsRemain" name="findSeatsRemain" readonly>
+                        </li>
+                        <li>
+                            <button id="clickRoomInfo">Find Capacity</button>
+                        </li>
+                    </ul>
+                </div>
 
                 <!--Add a Child-->
                 <form action="/add_child" method="post">

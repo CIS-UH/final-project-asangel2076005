@@ -2,6 +2,7 @@
 <html lang="en">
     <head>
         <%- include('../../partials/head'); %>
+        <script src="teacherspace.js" defer></script>
     </head>
 
     <body>
@@ -17,21 +18,31 @@
                 <!-- Find classroom capacity -->
                 <div class="find-room-capacity">
                     <h2>Find Room Capacity</h2>
-                    <li>
-                        <label for="findRoom">Classroom: </label>
-                            <select name="findRoom" id="findRoom">
-                                <% for (let instance of classroom) { %>
-                                    <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
-                                <% } %>
-                            </select>
-                    </li>
-                    <li>
-                        <label for="findCapacity">Capacity: </label>
-                        <input type="text" id="findCapacity" name="findCapacity">
-                    </li>
-                    <li>
-                        <button id="clickCapacity">Find Capacity</button>
-                    </li>
+                    <ul>
+                        <li>
+                            <label for="findRoom">Classroom: </label>
+                                <select name="findRoom" id="findRoom">
+                                    <% for (let instance of classroom) { %>
+                                        <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
+                                    <% } %>
+                                </select>
+                        </li>
+                        <li>
+                            <label for="findSpaces">Space Amount: </label>
+                            <input type="text" id="findSpaces" name="findSpaces" readonly>
+                        </li>
+                        <li>
+                            <label for="findTeacherAmt">Total Teachers: </label>
+                            <input type="text" id="findTeacherAmt" name="findTeacherAmt" readonly>
+                        </li>
+                        <li>
+                            <label for="findSpaceRemain">Spaces Remaining: </label>
+                            <input type="text" id="findSpaceRemain" name="findSpaceRemain" readonly>
+                        </li>
+                        <li>
+                            <button id="clickSpaceInfo">Find Space</button>
+                        </li>
+                    </ul>
                 </div>
 
                 <!--Add a Teacher-->
