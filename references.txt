@@ -1,4 +1,4 @@
-Add promise call (used by classcapacity.js)
+Add promise call (used by classcapacity.js and teacherspace.js)
 https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises
 
 Used flask_cors library to disable CORS blocking my fetch call of my api to the server.js

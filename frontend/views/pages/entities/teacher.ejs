@@ -132,7 +132,6 @@
                         <th>First Name</th>
                         <th>Last Name</th>
                         <th>Assigned Classroom</th>
-                        <th>Room Capacity</th>
                     </tr>
                     <% for (let instance of teacher) { %>
                         <tr>
@@ -141,7 +140,6 @@
                             <% for (let jnstance of classroom) { %>
                                 <% if (instance["CLASS_ID"] == jnstance["CLASS_ID"]) { %>
                                     <td><%= jnstance["CLASS_NAME"] %></td>
-                                    <td><%= jnstance["CLASS_CAPACITY"] %></td>
                                 <% } %>
                             <% } %>
                         </tr>
