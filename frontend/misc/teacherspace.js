@@ -1,6 +1,7 @@
 const fetchPromise = fetch("http://127.0.0.1:5000/api/space");
+// Calls this extra api to provide users with more information about teacher capacity in each rooms
 
-
+// DOM calls on teacher webpage 
 const findRoom = document.querySelector("#findRoom");
 const findSpaces = document.querySelector("#findSpaces");
 const findTeacherAmt = document.querySelector("#findTeacherAmt");
@@ -13,6 +14,9 @@ fetchPromise
     throw new Error(`HTTP error: ${response.status}`);
     }
     return response.json();
+
+    // If API is not running, throw this basic webpage
+
 })
 .then((data) => {
 
@@ -39,6 +43,8 @@ fetchPromise
     findSpaces.value = error;
     findTeacherAmt.value = error;
     findSpaceRemain.value = error;
+
+    // Throw the same errors on all 3 inputs if CORS blocks the API call
 });
 
 // Purpose: User ease of information knowledge about each room's capacity

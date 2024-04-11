@@ -3,12 +3,15 @@ from flask import jsonify, request
 from flask_cors import CORS
 from self_made_modules.sql_helper import create_connection, execute_read_query, execute_query
 from self_made_modules import creds
+# Ensure flask_cors is installed; otherwise, UX design (find capacity) will not work
 
 
 if __name__ == "__main__":
     # setting up an application name
     app = flask.Flask(__name__)  # sets up the application
     app.config["DEBUG"] = True  # allow to show errors in browser
+
+    # Disables CORS blocking API calls from this port to webserver Fetch API calls
     CORS(app)
 
     my_creds = creds.Creds()

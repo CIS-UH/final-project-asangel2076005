@@ -1,6 +1,7 @@
 const fetchPromise = fetch("http://127.0.0.1:5000/api/capacity");
+// Calls this extra api to provide users with more information about child capacity in each rooms
 
-
+// DOM calls on child webpage 
 const findRoom = document.querySelector("#findRoom");
 const findCapacity = document.querySelector("#findCapacity");
 const findChildAmt = document.querySelector("#findChildAmt");
@@ -12,7 +13,10 @@ fetchPromise
     if (!response.ok) {
     throw new Error(`HTTP error: ${response.status}`);
     }
+    
     return response.json();
+
+    // If API is not running, throw this basic webpage
 })
 .then((data) => {
 
@@ -39,6 +43,8 @@ fetchPromise
     findCapacity.value = error;
     findChildAmt.value = error;
     findSeatsRemain.value = error;
+
+    // Throw the same errors on all 3 inputs if CORS blocks the API call
 });
 
 // Purpose: User ease of information knowledge about each room's capacity

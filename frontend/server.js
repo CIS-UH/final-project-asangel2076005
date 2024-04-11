@@ -6,18 +6,30 @@ const path = require("path");
 
 // required module to make calls to a REST API
 const axios = require('axios');
-const { userInfo } = require('os');
-const { Console } = require('console');
 app.use(bodyParser.urlencoded());
 
 // set the view engine to ejs
 app.set('view engine', 'ejs');
 app.set("views", path.resolve(__dirname, "views")); 
 
-// Allow script and css to be used by the pages
+// Allow script and css to be used by the webpages
 app.use(express.static(path.join(__dirname, "misc")));
 
 // Begin code here
+
+/* 
+Notes: 
+
+choice: 
+    -> choice variables (will show up when you scroll down) represents a Foreign key. 
+    -> Since PK or FK's cannot appear in the webpage, this is the alternative
+    -> Function: 
+        On the presentation side, it will show the information represented by the FK, 
+        On the application side, the value is the actual FK (which is a digit)
+
+EJS Get calls
+    -> Will show the most recent added entries
+*/
 
 // Home/Login Route
 app.get("/", (req, res) => {
