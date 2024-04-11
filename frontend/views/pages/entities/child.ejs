@@ -18,6 +18,7 @@
                 <!-- Find classroom capacity -->
                 <div class="find-room-capacity">
                     <h2>Find Room Capacity</h2>
+                    <p>Note that a newly made classroom's information will not appear unless a teacher is added</p>
                     <ul>
                         <li>
                             <label for="findRoom">Classroom: </label>
@@ -162,7 +163,8 @@
                         <th>Age</th>
                         <th>Assigned Classroom</th>
                     </tr>
-                    <% for (let instance of child) { %>
+                    <% const childReversed = child.slice().reverse() %>
+                    <% for (let instance of childReversed) { %>
                         <tr>
                             <td><%= instance["CHILD_FNAME"] %></td>
                             <td><%= instance["CHILD_LNAME"] %></td>

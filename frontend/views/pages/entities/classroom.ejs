@@ -101,7 +101,8 @@
                         <th>Class Capacity</th>
                         <th>Facility</th>
                     </tr>
-                    <% for (const instance of classroom) { %>
+                    <% const classroomReversed = classroom.slice().reverse() %>
+                    <% for (const instance of classroomReversed) { %>
                         <tr>
                             <td><%= instance["CLASS_NAME"] %></td>
                             <td><%= instance["CLASS_CAPACITY"] %></td>

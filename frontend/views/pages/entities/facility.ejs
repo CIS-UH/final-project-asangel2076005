@@ -73,7 +73,8 @@
                     <tr>
                         <th>Facility Name</th>
                     </tr>
-                    <% for (const instance of facility) { %>
+                    <% const facilityReversed = facility.slice().reverse() %>
+                    <% for (const instance of facilityReversed) { %>
                         <tr>
                             <td><%= instance["FACILITY_NAME"] %></td>
                         </tr>

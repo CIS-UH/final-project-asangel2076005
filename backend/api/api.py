@@ -714,6 +714,7 @@ if __name__ == "__main__":
 
     # Extra API Calls
     # Child Webpage Functionality: Find seats remaining for user information
+    # Will not include rooms that are newly added (meaning no child yet)
     @app.route("/api/capacity", methods=["GET"])
     def retrieve_capacity():
         sql = """SELECT C.CLASS_ID, CLASS_NAME, FACILITY_ID, CLASS_CAPACITY, COUNT(CHILD_ID) AS CHILD_AMT, 
@@ -727,6 +728,7 @@ if __name__ == "__main__":
         return jsonify(capacity)
 
     # Teacher Webpage Functionality: Find teacher spaces remaining for user information
+    # Will not include rooms that are newly added (meaning no teachers yet)
     @app.route("/api/space", methods=["GET"])
     def retrieve_space():
         sql = """SELECT C.CLASS_ID, CLASS_NAME, FACILITY_ID, CEIL(CLASS_CAPACITY / 10) AS ROUNDED_CAPACITY, 
