@@ -10,3 +10,6 @@ https://www.joshwcomeau.com/css/custom-css-reset/
 
 Links and button designs
 https://getcssscan.com/css-buttons-examples
+
+Sort Table library
+https://www.kryogenix.org/code/browser/sorttable/sorttable.js
