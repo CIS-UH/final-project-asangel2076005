@@ -1,0 +1,210 @@
+/* Navigation bar*/
+ul {
+    list-style-type: none; /* Remove the bullets */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+}
+li {
+    padding-inline-start: 0; /* Remove left padding */
+}
+
+
+/* Navigation Bar: Global*/
+
+ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center; /* Center the items horizontally */
+    flex-wrap: wrap;
+    gap: 50px;
+}
+
+
+a, button {
+    font-size: 16px;
+    font-weight: 200;
+    letter-spacing: 1px;
+    padding: 13px 20px 13px;
+    outline: 0;
+    border: 1px solid black;
+    cursor: pointer;
+    position: relative;
+    background-color: rgba(0, 0, 0, 0);
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+}
+
+a:after, button:after {
+    content: "";
+    background-color: #ffe54c;
+    width: 100%;
+    z-index: -1;
+    position: absolute;
+    height: 100%;
+    top: 7px;
+    left: 7px;
+    transition: 0.2s;
+}
+
+a:hover:after, button:hover:after {
+    top: 0px;
+    left: 0px;
+}
+
+@media (min-width: 768px) {
+a, button {
+    padding: 13px 50px 13px;
+    }
+}
+
+header a {
+    text-decoration: none;
+}
+
+a:visited {
+    color: inherit;
+}
+
+header a:hover {
+    text-decoration: underline;
+}
+
+header h1 {
+    text-align: center;
+    font-size: 36px;
+    margin-block-end: 16px;
+}
+
+
+/* Dashboard */
+
+main {
+    inline-size: 80%;
+    margin: 0 auto;
+    margin-block-start: 64px;
+    text-align: center;
+}
+
+.dashboard h1 {
+    inline-size: 50%;
+    margin: 0 auto;
+    padding: 2%;
+    background-color: #ffe54c;
+    border: 1px solid black;
+    border-radius: 5px;
+}
+
+img {
+    display: block;
+    margin: 0 auto;
+}
+
+/* Login In */
+form {
+    margin: 0 auto;
+    padding: 3%;
+    border: 1px solid black;
+    border-radius: 10px;
+}
+
+/* Media query for smaller window sizes */
+@media screen and (max-width: 768px) {
+    form img {
+        max-inline-size: 50%; 
+        max-block-size: 50%; 
+    }
+}
+
+form ul {
+    flex-direction: column;
+    gap: 10px
+}
+
+.error p {
+    margin-block-end: 100px
+}
+
+/* POST, PUT, and DELETE form style*/
+
+.entity-forms {
+    margin-block-start: 36px;
+    margin-block-end: 36px;
+    display: flex;
+    gap: 1px;
+    flex-wrap: wrap;
+    flex-direction: row;
+}
+
+.entity-forms form {
+    flex: 1;
+    padding: 10px;
+    text-align: center;
+    padding-block-start: 2%;
+    padding-block-end: 5%;
+}
+
+.entity-forms label, .entity-forms input, .entity-forms select {
+    display: block;
+}
+
+.entity-forms select, .entity-forms input[type="text"] {
+    width: 200px; 
+    margin: 0 auto; 
+    display: block; 
+    margin-bottom: 10px; 
+}
+
+/* Find Room Capacity Section for Teacher and Child webpages*/
+.find-room-capacity {
+    padding-block-start: 36px;
+    padding-block-end: 36px;
+    border-radius: 20px;
+    border: 1px solid black;
+}
+
+.find-room-capacity p {
+    margin-block-end: 10px;
+}
+
+table {
+    margin: 0 auto;
+    border-collapse: collapse;
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+    border: 2px solid black;
+    border-radius: 10px;
+    width: 100%;
+}
+
+.find-room-capacity table {
+    width: 80%;
+}
+
+.find-room-capacity select, .find-room-capacity input[type="text"] {
+    width: 70%;
+    border-width: 0px;
+}
+
+.find-room-capacity td, .find-room-capacity th {
+    width: 10px;
+    padding: 0;
+    padding-block-start: 10px;
+    padding-block-end: 10px;
+}
+
+td, th {
+    border: 1px solid black;
+    padding: 10px 20px;
+}
+
+.get th {
+    font-size: 16px;
+}
+
+
+td {
+    text-align: center;
+}

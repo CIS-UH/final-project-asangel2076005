@@ -14,62 +14,64 @@
             <!--If Facility exists, render a table; otherwise throw an error paragraph-->
             <% if (typeof facility !== "undefined" && facility) { %>
 
-                <!--Add a facility-->
-                <form action="/add_facility" method="post">
-                    <h2>Add</h2>
-                    <ul>
-                        <li>
-                            <label for="FACILITY_NAME">Name: </label>
-                            <input type="text" id="FACILITY_NAME" name="FACILITY_NAME" required>
-                        </li>
-                        <li>
-                            <button type="submit">Add</button>
-                        </li>
-                    </ul>
-                </form>
+                <div class="entity-forms">
+                    <!--Add a facility-->
+                    <form action="/add_facility" method="post">
+                        <h2>Add</h2>
+                        <ul>
+                            <li>
+                                <label for="FACILITY_NAME">Name: </label>
+                                <input type="text" id="FACILITY_NAME" name="FACILITY_NAME" required>
+                            </li>
+                            <li>
+                                <button type="submit">Add</button>
+                            </li>
+                        </ul>
+                    </form>
 
-                <!-- Update a facility -->
-                <form action="/update_facility" method="post">
-                    <h2>Update</h2>
-                    <ul>
-                        <li>
-                            <label for="updateFacilityChoice">Facilities: </label>
-                            <select name="choice" id="updateFacilityChoice">
-                                <% for (let instance of facility) { %>
-                                    <option value="<%= instance["FACILITY_ID"] %>"><%= instance["FACILITY_NAME"] %></option>
-                                <% } %>
-                            </select>
-                        </li>
-                        <li>
-                            <label for="FACILITY_NAME">Name: </label>
-                            <input type="text" id="FACILITY_NAME" name="FACILITY_NAME" required>
-                        </li>
-                        <li>
-                            <button type="submit">Update</button>
-                        </li>
-                    </ul>
-                </form>
+                    <!-- Update a facility -->
+                    <form action="/update_facility" method="post">
+                        <h2>Update</h2>
+                        <ul>
+                            <li>
+                                <label for="updateFacilityChoice">Facilities: </label>
+                                <select name="choice" id="updateFacilityChoice">
+                                    <% for (let instance of facility) { %>
+                                        <option value="<%= instance["FACILITY_ID"] %>"><%= instance["FACILITY_NAME"] %></option>
+                                    <% } %>
+                                </select>
+                            </li>
+                            <li>
+                                <label for="FACILITY_NAME">Name: </label>
+                                <input type="text" id="FACILITY_NAME" name="FACILITY_NAME" required>
+                            </li>
+                            <li>
+                                <button type="submit">Update</button>
+                            </li>
+                        </ul>
+                    </form>
 
-                <!-- Delete a facility -->
-                <form action="/delete_facility" method="post">
-                    <h2>Delete</h2>
-                    <ul>
-                        <li>
-                            <label for="deleteFacilityChoice">Facility: </label>
-                            <select name="choice" id="deleteFacilityChoice" required>
-                                <option value=""></option>
-                                <% for (let instance of facility) { %>
-                                    <option value="<%= instance["FACILITY_ID"] %>"><%= instance["FACILITY_NAME"] %></option>
-                                <% } %>
-                            </select>
-                        </li>
-                        <li>
-                            <button type="submit">Delete</button>
-                        </li>
-                    </ul>
-                </form>
+                    <!-- Delete a facility -->
+                    <form action="/delete_facility" method="post">
+                        <h2>Delete</h2>
+                        <ul>
+                            <li>
+                                <label for="deleteFacilityChoice">Facility: </label>
+                                <select name="choice" id="deleteFacilityChoice" required>
+                                    <option value=""></option>
+                                    <% for (let instance of facility) { %>
+                                        <option value="<%= instance["FACILITY_ID"] %>"><%= instance["FACILITY_NAME"] %></option>
+                                    <% } %>
+                                </select>
+                            </li>
+                            <li>
+                                <button type="submit">Delete</button>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
                 <!--Quick Table Summary: Get All-->
-                <table>
+                <table class="get">
                     <tr>
                         <th>Facility Name</th>
                     </tr>

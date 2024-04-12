@@ -4,3 +4,9 @@ https://developer.mozilla.org/en-US/docs/Learn/JavaScript/Asynchronous/Promises
 Used flask_cors library to disable CORS blocking my fetch call of my api to the server.js
 pip install flask_cors
 https://stackoverflow.com/questions/25594893/how-to-enable-cors-in-flask
+
+Reset.css
+https://www.joshwcomeau.com/css/custom-css-reset/
+
+Links and button designs
+https://getcssscan.com/css-buttons-examples

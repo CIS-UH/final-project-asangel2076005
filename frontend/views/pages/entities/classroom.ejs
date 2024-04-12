@@ -13,89 +13,91 @@
             <h1>Classroom</h1>
             <!--If Classroom and Facility exists, render a table; otherwise throw an error paragraph-->
             <% if ((typeof classroom !== "undefined" && typeof facility !== "undefined") && (classroom && facility)) { %>
+
+                <div class="entity-forms">
                 <!--Add a Classroom-->
-                <form action="/add_classroom" method="post">
-                    <h2>Add</h2>
-                    <ul>
-                        <li>
-                            <label for="CLASS_NAME">Name: </label>
-                            <input type="text" id="CLASS_NAME" name="CLASS_NAME" required>
-                        </li>
-                        <li>
-                            <label for="CLASS_CAPACITY">Capacity: </label>
-                            <input type="text" id="CLASS_CAPACITY" name="CLASS_CAPACITY" required>
-                        </li>
-                        <li>
-                            <label for="FACILITY_ID">Facility: </label>
-                            <select name="FACILITY_ID" id="FACILITY_ID">
-                                <% for (let instance of facility) { %>
-                                    <option value="<%= instance["FACILITY_ID"] %>"><%= instance["FACILITY_NAME"] %></option>
-                                <% } %>
-                            </select>
-                        </li>
-                        <li>
-                            <button type="submit">Add</button>
-                        </li>
-                    </ul>
-                </form>
+                    <form action="/add_classroom" method="post">
+                        <h2>Add</h2>
+                        <ul>
+                            <li>
+                                <label for="CLASS_NAME">Name: </label>
+                                <input type="text" id="CLASS_NAME" name="CLASS_NAME" required>
+                            </li>
+                            <li>
+                                <label for="CLASS_CAPACITY">Capacity: </label>
+                                <input type="text" id="CLASS_CAPACITY" name="CLASS_CAPACITY" required>
+                            </li>
+                            <li>
+                                <label for="FACILITY_ID">Facility: </label>
+                                <select name="FACILITY_ID" id="FACILITY_ID">
+                                    <% for (let instance of facility) { %>
+                                        <option value="<%= instance["FACILITY_ID"] %>"><%= instance["FACILITY_NAME"] %></option>
+                                    <% } %>
+                                </select>
+                            </li>
+                            <li>
+                                <button type="submit">Add</button>
+                            </li>
+                        </ul>
+                    </form>
 
-                <!-- Update a classroom -->
-                <form action="/update_classroom" method="post">
-                    <h2>Update</h2>
-                    <ul>
-                        <li>
-                            <label for="updateClassroomChoice">Classroom: </label>
-                            <select name="choice" id="updateClassroomChoice" required>
-                                <option value=""></option>
-                                <% for (let instance of classroom) { %>
-                                    <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
-                                <% } %>
-                            </select>
-                        </li>
-                        <li>
-                            <label for="CLASS_NAME">Name: </label>
-                            <input type="text" id="CLASS_NAME" name="CLASS_NAME">
-                        </li>
-                        <li>
-                            <label for="CLASS_CAPACITY">Capacity: </label>
-                            <input type="text" id="CLASS_CAPACITY" name="CLASS_CAPACITY">
-                        </li>
-                        <li>
-                            <label for="FACILITY_ID">Facility: </label>
-                            <select name="FACILITY_ID" id="FACILITY_ID">
-                                <option value=""></option>
-                                <% for (let instance of facility) { %>
-                                    <option value="<%= instance["FACILITY_ID"] %>"><%= instance["FACILITY_NAME"] %></option>
-                                <% } %>
-                            </select>
-                        </li>
-                        <li>
-                            <button type="submit">Update</button>
-                        </li>
-                    </ul>
-                </form>
+                    <!-- Update a classroom -->
+                    <form action="/update_classroom" method="post">
+                        <h2>Update</h2>
+                        <ul>
+                            <li>
+                                <label for="updateClassroomChoice">Classroom: </label>
+                                <select name="choice" id="updateClassroomChoice" required>
+                                    <option value=""></option>
+                                    <% for (let instance of classroom) { %>
+                                        <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
+                                    <% } %>
+                                </select>
+                            </li>
+                            <li>
+                                <label for="CLASS_NAME">Name: </label>
+                                <input type="text" id="CLASS_NAME" name="CLASS_NAME">
+                            </li>
+                            <li>
+                                <label for="CLASS_CAPACITY">Capacity: </label>
+                                <input type="text" id="CLASS_CAPACITY" name="CLASS_CAPACITY">
+                            </li>
+                            <li>
+                                <label for="FACILITY_ID">Facility: </label>
+                                <select name="FACILITY_ID" id="FACILITY_ID">
+                                    <option value=""></option>
+                                    <% for (let instance of facility) { %>
+                                        <option value="<%= instance["FACILITY_ID"] %>"><%= instance["FACILITY_NAME"] %></option>
+                                    <% } %>
+                                </select>
+                            </li>
+                            <li>
+                                <button type="submit">Update</button>
+                            </li>
+                        </ul>
+                    </form>
 
-                <!-- Delete a classroom -->
-                <form action="/delete_classroom" method="post">
-                    <h2>Delete</h2>
-                    <ul>
-                        <li>
-                            <label for="deleteClassroomChoice">Classroom: </label>
-                            <select name="choice" id="deleteClassroomChoice" required>
-                                <option value=""></option>
-                                <% for (let instance of classroom) { %>
-                                    <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
-                                <% } %>
-                            </select>
-                        </li>
-                        <li>
-                            <button type="submit">Delete</button>
-                        </li>
-                    </ul>
-                </form>
-
+                    <!-- Delete a classroom -->
+                    <form action="/delete_classroom" method="post">
+                        <h2>Delete</h2>
+                        <ul>
+                            <li>
+                                <label for="deleteClassroomChoice">Classroom: </label>
+                                <select name="choice" id="deleteClassroomChoice" required>
+                                    <option value=""></option>
+                                    <% for (let instance of classroom) { %>
+                                        <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
+                                    <% } %>
+                                </select>
+                            </li>
+                            <li>
+                                <button type="submit">Delete</button>
+                            </li>
+                        </ul>
+                    </form>
+                 </div>
                 <!--Quick Table Summary: Get All-->
-                <table>
+                <table class="get">
                     <tr>
                         <th>Class Name</th>
                         <th>Class Capacity</th>

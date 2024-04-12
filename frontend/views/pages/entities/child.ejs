@@ -19,144 +19,148 @@
                 <div class="find-room-capacity">
                     <h2>Find Room Capacity</h2>
                     <p>Note that a newly made classroom's information will not appear unless a teacher is added</p>
-                    <ul>
-                        <li>
-                            <label for="findRoom">Classroom: </label>
+                    <table>
+                        <tr>
+                            <th><label for="findRoom">Classroom: </label></th>
+                            <th><label for="findCapacity">Capacity: </label></th>
+                            <th><label for="findChildAmt">Total Children: </label></th>
+                            <th><label for="findSeatsRemain">Seats Remaining: </label></th>
+                        </tr>
+                        <tr>
+                            <td>
                                 <select name="findRoom" id="findRoom">
                                     <% for (let instance of classroom) { %>
                                         <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
                                     <% } %>
                                 </select>
-                        </li>
-                        <li>
-                            <label for="findCapacity">Capacity: </label>
-                            <input type="text" id="findCapacity" name="findCapacity" readonly>
-                        </li>
-                        <li>
-                            <label for="findChildAmt">Total Children: </label>
-                            <input type="text" id="findChildAmt" name="findChildAmt" readonly>
-                        </li>
-                        <li>
-                            <label for="findSeatsRemain">Seats Remaining: </label>
-                            <input type="text" id="findSeatsRemain" name="findSeatsRemain" readonly>
-                        </li>
-                        <li>
-                            <button id="clickRoomInfo">Find Capacity</button>
-                        </li>
-                    </ul>
+                            </td>
+                            <td>
+                                <input type="text" id="findCapacity" name="findCapacity" readonly>
+                            </td>
+                            <td>
+                                <input type="text" id="findChildAmt" name="findChildAmt" readonly>
+                            </td>
+                            <td>
+                                <input type="text" id="findSeatsRemain" name="findSeatsRemain" readonly>
+                            </td>
+                        </tr>
+                    </table>
+                    <br>
+                    <button id="clickRoomInfo">Find Capacity</button>
                 </div>
 
-                <!--Add a Child-->
-                <form action="/add_child" method="post">
-                    <h2>Add</h2>
-                    <ul>
-                        <li>
-                            <label for="CHILD_FNAME">First Name: </label>
-                            <input type="text" id="CHILD_FNAME" name="CHILD_FNAME" required>
-                        </li>
-                        <li>
-                            <label for="CHILD_LNAME">Last Name: </label>
-                            <input type="text" id="CHILD_LNAME" name="CHILD_LNAME" required>
-                        </li>
-                        <li>
-                            <label for="CHILD_AGE">Age: </label>
-                            <input type="text" id="CHILD_AGE" name="CHILD_AGE" required>
-                        </li>
-                        <li>
-                            <label for="CLASS_ID">Classroom: </label>
-                            <select name="CLASS_ID" id="CLASS_ID">
-                                <% for (let instance of classroom) { %>
-                                    <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
-                                <% } %>
-                            </select>
-                        </li>
-                        <li>
-                            <button type="submit">Add</button>
-                        </li>
-                    </ul>
-                </form>
+                <div class="entity-forms">
+                    <!--Add a Child-->
+                    <form action="/add_child" method="post">
+                        <h2>Add</h2>
+                        <ul>
+                            <li>
+                                <label for="CHILD_FNAME">First Name: </label>
+                                <input type="text" id="CHILD_FNAME" name="CHILD_FNAME" required>
+                            </li>
+                            <li>
+                                <label for="CHILD_LNAME">Last Name: </label>
+                                <input type="text" id="CHILD_LNAME" name="CHILD_LNAME" required>
+                            </li>
+                            <li>
+                                <label for="CHILD_AGE">Age: </label>
+                                <input type="text" id="CHILD_AGE" name="CHILD_AGE" required>
+                            </li>
+                            <li>
+                                <label for="CLASS_ID">Classroom: </label>
+                                <select name="CLASS_ID" id="CLASS_ID">
+                                    <% for (let instance of classroom) { %>
+                                        <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
+                                    <% } %>
+                                </select>
+                            </li>
+                            <li>
+                                <button type="submit">Add</button>
+                            </li>
+                        </ul>
+                    </form>
 
-                <!--Update Child-->
-                <form action="/update_child" method="post">
-                    <h2>Update</h2>
-                    <ul>
-                        <li>
-                            <label for="updateChildChoice">Child: </label>
-                            <select name="choice" id="updateChildChoice" required>
-                                <option value=""></option>
-                                <% for (let instance of classroom) { %>
-                                    <optgroup label="<%= instance["CLASS_NAME"]%>">
-                                        <% for (let jnstance of child) { %>
-                                            <% if (instance["CLASS_ID"] == jnstance["CLASS_ID"]) { %>
-                                                <option value="<%= jnstance["CHILD_ID"]%>">
-                                                    <%= jnstance["CHILD_FNAME"]%> 
-                                                    <%= jnstance["CHILD_LNAME"]%> 
-                                                    <%= jnstance["CHILD_AGE"]%>
-                                                </option>
+                    <!--Update Child-->
+                    <form action="/update_child" method="post">
+                        <h2>Update</h2>
+                        <ul>
+                            <li>
+                                <label for="updateChildChoice">Child: </label>
+                                <select name="choice" id="updateChildChoice" required>
+                                    <option value=""></option>
+                                    <% for (let instance of classroom) { %>
+                                        <optgroup label="<%= instance["CLASS_NAME"]%>">
+                                            <% for (let jnstance of child) { %>
+                                                <% if (instance["CLASS_ID"] == jnstance["CLASS_ID"]) { %>
+                                                    <option value="<%= jnstance["CHILD_ID"]%>">
+                                                        <%= jnstance["CHILD_FNAME"]%> 
+                                                        <%= jnstance["CHILD_LNAME"]%> 
+                                                        <%= jnstance["CHILD_AGE"]%>
+                                                    </option>
+                                                <% } %>
                                             <% } %>
-                                        <% } %>
-                                    </optgroup>
-                                <% } %>
-                            </select>
-                        </li>
-                        <li>
-                            <label for="CHILD_FNAME">First Name: </label>
-                            <input type="text" id="CHILD_FNAME" name="CHILD_FNAME">
-                        </li>
-                        <li>
-                            <label for="CHILD_LNAME">Last Name: </label>
-                            <input type="text" id="CHILD_LNAME" name="CHILD_LNAME">
-                        </li>
-                        <li>
-                            <label for="CHILD_AGE">Age: </label>
-                            <input type="text" id="CHILD_AGE" name="CHILD_AGE">
-                        </li>
-                        <li>
-                            <label for="CLASS_ID">Classroom: </label>
-                            <select name="CLASS_ID" id="CLASS_ID">
-                                <option value=""></option>
-                                <% for (let instance of classroom) { %>
-                                    <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
-                                <% } %>
-                            </select>
-                        </li>
-                        <li>
-                            <button type="submit">Update</button>
-                        </li>
-                    </ul>
-                </form>
+                                        </optgroup>
+                                    <% } %>
+                                </select>
+                            </li>
+                            <li>
+                                <label for="CHILD_FNAME">First Name: </label>
+                                <input type="text" id="CHILD_FNAME" name="CHILD_FNAME">
+                            </li>
+                            <li>
+                                <label for="CHILD_LNAME">Last Name: </label>
+                                <input type="text" id="CHILD_LNAME" name="CHILD_LNAME">
+                            </li>
+                            <li>
+                                <label for="CHILD_AGE">Age: </label>
+                                <input type="text" id="CHILD_AGE" name="CHILD_AGE">
+                            </li>
+                            <li>
+                                <label for="CLASS_ID">Classroom: </label>
+                                <select name="CLASS_ID" id="CLASS_ID">
+                                    <option value=""></option>
+                                    <% for (let instance of classroom) { %>
+                                        <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
+                                    <% } %>
+                                </select>
+                            </li>
+                            <li>
+                                <button type="submit">Update</button>
+                            </li>
+                        </ul>
+                    </form>
 
-                <!--Delete Child-->
-                <form action="delete_child" method="post">
-                    <h2>Delete</h2>
-                    <ul>
-                        <li>
-                            <label for="deleteChildChoice">Child: </label>
-                            <select name="choice" id="deleteChildChoice" required>
-                                <option value=""></option>
-                                <% for (let instance of classroom) { %>
-                                    <optgroup label="<%= instance["CLASS_NAME"]%>">
-                                        <% for (let jnstance of child) { %>
-                                            <% if (instance["CLASS_ID"] == jnstance["CLASS_ID"]) { %>
-                                                <option value="<%= jnstance["CHILD_ID"]%>"> 
-                                                    <%= jnstance["CHILD_FNAME"]%> 
-                                                    <%= jnstance["CHILD_LNAME"]%> 
-                                                    <%= jnstance["CHILD_AGE"]%>
-                                                </option>
+                    <!--Delete Child-->
+                    <form action="delete_child" method="post">
+                        <h2>Delete</h2>
+                        <ul>
+                            <li>
+                                <label for="deleteChildChoice">Child: </label>
+                                <select name="choice" id="deleteChildChoice" required>
+                                    <option value=""></option>
+                                    <% for (let instance of classroom) { %>
+                                        <optgroup label="<%= instance["CLASS_NAME"]%>">
+                                            <% for (let jnstance of child) { %>
+                                                <% if (instance["CLASS_ID"] == jnstance["CLASS_ID"]) { %>
+                                                    <option value="<%= jnstance["CHILD_ID"]%>"> 
+                                                        <%= jnstance["CHILD_FNAME"]%> 
+                                                        <%= jnstance["CHILD_LNAME"]%> 
+                                                        <%= jnstance["CHILD_AGE"]%>
+                                                    </option>
+                                                <% } %>
                                             <% } %>
-                                        <% } %>
-                                    </optgroup>
-                                <% } %>
-                            </select>
-                        </li>
-                        <li>
-                            <button type="submit">Delete</button>
-                        </li>
-                    </ul>
-                </form>
-                
+                                        </optgroup>
+                                    <% } %>
+                                </select>
+                            </li>
+                            <li>
+                                <button type="submit">Delete</button>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
                 <!--Quick Table Summary: Get All-->
-                <table>
+                <table class="get">
                     <tr>
                         <th>First Name</th>
                         <th>Last Name</th>
