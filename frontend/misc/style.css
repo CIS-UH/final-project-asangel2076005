@@ -1,4 +1,7 @@
 /* Navigation bar*/
+body {
+    background-image: url("background/squairy.png");
+}
 ul {
     list-style-type: none; /* Remove the bullets */
     padding: 0; /* Remove default padding */
