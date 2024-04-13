@@ -159,6 +159,7 @@ form ul {
     margin: 0 auto; 
     display: block; 
     margin-bottom: 10px; 
+    text-align: center;
 }
 
 /* Find Room Capacity Section for Teacher and Child webpages*/
@@ -190,6 +191,7 @@ table {
 .find-room-capacity select, .find-room-capacity input[type="text"] {
     width: 70%;
     border-width: 0px;
+    text-align: center;
 }
 
 .find-room-capacity td, .find-room-capacity th {
