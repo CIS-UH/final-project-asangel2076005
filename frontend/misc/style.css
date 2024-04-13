@@ -2,15 +2,16 @@
 body {
     background-image: url("background/squairy.png");
 }
+
 ul {
     list-style-type: none; /* Remove the bullets */
     padding: 0; /* Remove default padding */
     margin: 0; /* Remove default margin */
 }
+
 li {
     padding-inline-start: 0; /* Remove left padding */
 }
-
 
 /* Navigation Bar: Global*/
 
@@ -72,7 +73,7 @@ a:visited {
 }
 
 header a:hover {
-    text-decoration: underline;
+    text-decoration: none;
 }
 
 header h1 {

@@ -63,15 +63,6 @@ app.get("/dashboard", (req, res) => {
     res.render("pages/dashboard");
 });
 
-/*app.post("/process_crud", (req, res) => {
-
-    const crud = req.body.crud;
-    const entity = req.body.entity;
-
-    console.log(`${crud} ${entity}`);
-});*/
-
-
 // Facility Webpage
 app.get("/facility", (req, res) => {
 

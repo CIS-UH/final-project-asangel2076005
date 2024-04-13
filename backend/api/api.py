@@ -26,14 +26,14 @@ if __name__ == "__main__":
         return "<h1><center>Welcome to the School API</center></h1>"
 
     # Login API
-    # username: asangel
-    # password: haha12345
+    # username: admin
+    # password: password
     @app.route("/api/login", methods=["GET"])
     def user_login():
         username = request.headers["username"]
         password = request.headers["password"]
 
-        if (username == "asangel") and (password == "haha12345"):
+        if (username == "admin") and (password == "password"):
             return "Login Success"
 
         return "Login Failed"

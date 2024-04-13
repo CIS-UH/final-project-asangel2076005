@@ -104,20 +104,20 @@
                                 </select>
                             </li>
                             <li>
-                                <label for="CHILD_FNAME">First Name: </label>
-                                <input type="text" id="CHILD_FNAME" name="CHILD_FNAME">
+                                <label for="CHILD_FNAME2">First Name: </label>
+                                <input type="text" id="CHILD_FNAME2" name="CHILD_FNAME">
                             </li>
                             <li>
-                                <label for="CHILD_LNAME">Last Name: </label>
-                                <input type="text" id="CHILD_LNAME" name="CHILD_LNAME">
+                                <label for="CHILD_LNAME2">Last Name: </label>
+                                <input type="text" id="CHILD_LNAME2" name="CHILD_LNAME">
                             </li>
                             <li>
-                                <label for="CHILD_AGE">Age: </label>
-                                <input type="text" id="CHILD_AGE" name="CHILD_AGE">
+                                <label for="CHILD_AGE2">Age: </label>
+                                <input type="text" id="CHILD_AGE2" name="CHILD_AGE">
                             </li>
                             <li>
-                                <label for="CLASS_ID">Classroom: </label>
-                                <select name="CLASS_ID" id="CLASS_ID">
+                                <label for="CLASS_ID2">Classroom: </label>
+                                <select name="CLASS_ID" id="CLASS_ID2">
                                     <option value=""></option>
                                     <% for (let instance of classroom) { %>
                                         <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
@@ -185,9 +185,5 @@
                 <p>No data in the table exists</p>
             <% } %>
         </main>
-
-        <footer>
-            <%- include('../../partials/footer'); %>
-        </footer>
     </body>
 </html>

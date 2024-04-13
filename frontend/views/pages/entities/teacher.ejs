@@ -99,16 +99,16 @@
                                 </select>
                             </li>
                             <li>
-                                <label for="TEACHER_FNAME">First Name: </label>
-                                <input type="text" id="TEACHER_FNAME" name="TEACHER_FNAME">
+                                <label for="TEACHER_FNAME2">First Name: </label>
+                                <input type="text" id="TEACHER_FNAME2" name="TEACHER_FNAME">
                             </li>
                             <li>
-                                <label for="TEACHER_LNAME">Last Name: </label>
-                                <input type="text" id="TEACHER_LNAME" name="TEACHER_LNAME">
+                                <label for="TEACHER_LNAME2">Last Name: </label>
+                                <input type="text" id="TEACHER_LNAME2" name="TEACHER_LNAME">
                             </li>
                             <li>
-                                <label for="CLASS_ID">Classroom: </label>
-                                <select name="CLASS_ID" id="CLASS_ID">
+                                <label for="CLASS_ID2">Classroom: </label>
+                                <select name="CLASS_ID" id="CLASS_ID2">
                                     <option value=""></option>
                                     <% for (let instance of classroom) { %>
                                         <option value="<%= instance["CLASS_ID"] %>"><%= instance["CLASS_NAME"] %></option>
@@ -173,9 +173,5 @@
                 <p>No data in the table exists</p>
             <% } %>
         </main>
-
-        <footer>
-            <%- include('../../partials/footer'); %>
-        </footer>
     </body>
 </html>
